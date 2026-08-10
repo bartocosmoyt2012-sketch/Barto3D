@@ -1,631 +1,297 @@
 <!DOCTYPE html>
-
 <html lang="pl">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>3D Forge</title>
-  <link rel="stylesheet" href="style.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>3D Forge - Druk 3D</title>
+    <link rel="stylesheet" href="style.css">
 </head>
-
 <body>
-
-<header class="header">
-
-  <a href="#" class="logo" onclick="showPage('home'); return false;">
-    <span>3D</span> FORGE
-  </a>
-
-  <nav>
-    <a href="#" onclick="showPage('home'); return false;">Start</a>
-    <a href="#" onclick="showPage('shop'); return false;">Sklep</a>
-    <a href="#" onclick="showPage('about'); return false;">O nas</a>
-    <a href="#" onclick="showPage('contact'); return false;">Kontakt</a>
-
-```
-<button class="cart-button" onclick="openCart()">
-  🛒 Koszyk <span id="cartCount">0</span>
-</button>
-```
-
-  </nav>
-
-</header>
-
-<main>
-
-  <!-- STRONA GŁÓWNA -->
-
-  <section id="home" class="page active">
-
-```
-<div class="hero">
-
-  <div class="hero-text">
-
-    <div class="badge">
-      DRUK 3D • MADE IN POLAND
-    </div>
-
-    <h1>
-      Twoje pomysły.<br>
-      <span>Wydrukowane w 3D.</span>
-    </h1>
-
-    <p id="heroDescription">
-      Nowoczesne modele 3D, breloki i wyjątkowe projekty
-      tworzone z pasją.
-    </p>
-
-    <button class="main-button" onclick="showPage('shop')">
-      Zobacz sklep →
-    </button>
-
-  </div>
-
-
-  <div class="hero-model">
-    3D
-  </div>
-
-</div>
-
-
-<div class="section">
-
-  <h2>
-    Popularne produkty
-  </h2>
-
-  <p class="section-subtitle">
-    Sprawdź nasze najciekawsze projekty.
-  </p>
-
-  <div id="featuredProducts" class="products"></div>
-
-</div>
-
-
-<div class="how">
-
-  <h2>
-    Jak to działa?
-  </h2>
-
-  <div class="steps">
-
-    <div>
-      <strong>01</strong>
-
-      <h3>
-        Wybierasz produkt
-      </h3>
-
-      <p>
-        Znajdź interesujący Cię model.
-      </p>
-    </div>
-
-
-    <div>
-      <strong>02</strong>
-
-      <h3>
-        Dodajesz do koszyka
-      </h3>
-
-      <p>
-        Wybierz produkty i ich ilość.
-      </p>
-    </div>
-
-
-    <div>
-      <strong>03</strong>
-
-      <h3>
-        Kupujesz przez OLX
-      </h3>
-
-      <p>
-        Przejdź do odpowiedniego ogłoszenia.
-      </p>
-    </div>
-
-  </div>
-
-</div>
-```
-
-  </section>
-
-  <!-- SKLEP -->
-
-  <section id="shop" class="page">
-
-```
-<div class="page-title">
-
-  <div>
-
-    <div class="badge">
-      NASZE PRODUKTY
-    </div>
-
-    <h1>
-      Sklep <span>3D</span>
-    </h1>
-
-  </div>
-
-
-  <input
-    id="searchInput"
-    class="search"
-    type="text"
-    placeholder="🔎 Szukaj produktu..."
-    oninput="renderProducts()"
-  >
-
-</div>
-
-
-<div id="products" class="products"></div>
-```
-
-  </section>
-
-  <!-- O NAS -->
-
-  <section id="about" class="page">
-
-```
-<div class="content-box">
-
-  <div class="badge">
-    O NAS
-  </div>
-
-  <h1>
-    Poznaj <span id="aboutCompany">3D Forge</span>
-  </h1>
-
-  <p id="aboutText">
-    Tworzymy ciekawe i praktyczne projekty drukowane w 3D.
-    Każdy model przygotowujemy z dbałością o szczegóły.
-  </p>
-
-</div>
-```
-
-  </section>
-
-  <!-- KONTAKT -->
-
-  <section id="contact" class="page">
-
-```
-<div class="content-box">
-
-  <div class="badge">
-    KONTAKT
-  </div>
-
-  <h1>
-    Skontaktuj się z nami
-  </h1>
-
-
-  <div class="contact-card">
-
-    <p>
-      📧
-      <strong>E-mail:</strong>
-      <span id="contactEmail"></span>
-    </p>
-
-    <p>
-      📞
-      <strong>Telefon:</strong>
-      <span id="contactPhone"></span>
-    </p>
-
-  </div>
-
-</div>
-```
-
-  </section>
-
-  <!-- PANEL ADMINISTRATORA -->
-
-  <section id="admin" class="page">
-
-```
-<div class="admin-container">
-
-
-  <div class="admin-header">
-
-    <div>
-
-      <div class="badge">
-        PANEL ADMINISTRATORA
-      </div>
-
-      <h1>
-        Zarządzaj <span>sklepem</span>
-      </h1>
-
-    </div>
-
-
-    <button
-      class="danger-button"
-      onclick="resetAllData()"
-    >
-      🔄 Reset danych
-    </button>
-
-  </div>
-
-
-  <div class="admin-tabs">
-
-    <button
-      class="tab active"
-      onclick="openAdminTab('productsTab', this)"
-    >
-      📦 Produkty
-    </button>
-
-
-    <button
-      class="tab"
-      onclick="openAdminTab('siteTab', this)"
-    >
-      🌐 Dane strony
-    </button>
-
-  </div>
-
-
-  <!-- PRODUKTY -->
-
-  <div
-    id="productsTab"
-    class="admin-tab-content active"
-  >
-
-    <div class="admin-grid">
-
-
-      <div class="admin-form">
-
-        <h2 id="formTitle">
-          Dodaj produkt
-        </h2>
-
-
-        <input
-          id="productId"
-          type="hidden"
-        >
-
-
-        <label>
-          Nazwa produktu
-        </label>
-
-        <input
-          id="productName"
-          type="text"
-          placeholder="np. Porsche 911"
-        >
-
-
-        <label>
-          Cena
-        </label>
-
-        <input
-          id="productPrice"
-          type="number"
-          min="0"
-          step="0.01"
-          placeholder="45"
-        >
-
-
-        <label>
-          Opis
-        </label>
-
-        <textarea
-          id="productDescription"
-          placeholder="Opis produktu..."
-        ></textarea>
-
-
-        <label>
-          Zdjęcie produktu
-        </label>
-
-        <input
-          id="productImage"
-          type="text"
-          placeholder="https://..."
-        >
-
-
-        <small>
-          Wklej adres zdjęcia produktu.
-        </small>
-
-
-        <label>
-          Kolory / warianty
-        </label>
-
-        <input
-          id="productColors"
-          type="text"
-          placeholder="Czarny, Biały, Czerwony"
-        >
-
-
-        <label>
-          Link do OLX
-        </label>
-
-        <input
-          id="productOlx"
-          type="url"
-          placeholder="https://www.olx.pl/..."
-        >
-
-
-        <label class="checkbox">
-
-          <input
-            id="productFeatured"
-            type="checkbox"
-          >
-
-          ⭐ Wyróżnij produkt
-
-        </label>
-
-
-        <div class="form-buttons">
-
-          <button
-            class="main-button"
-            onclick="saveProduct()"
-          >
-            💾 Zapisz produkt
-          </button>
-
-
-          <button
-            class="secondary-button"
-            onclick="clearProductForm()"
-          >
-            Wyczyść
-          </button>
-
+    <!-- NAVIGATION -->
+    <nav class="navbar">
+        <div class="container">
+            <div class="nav-wrapper">
+                <div class="logo">
+                    <span class="logo-icon">⚙️</span>
+                    <span class="logo-text" id="navBrandName">3D Forge</span>
+                </div>
+                <button class="menu-toggle" id="menuToggle">☰</button>
+                <ul class="nav-menu" id="navMenu">
+                    <li><a href="#home" class="nav-link">Strona główna</a></li>
+                    <li><a href="#shop" class="nav-link">Sklep</a></li>
+                    <li><a href="#how" class="nav-link">Jak to działa</a></li>
+                    <li><a href="#about" class="nav-link">O nas</a></li>
+                    <li><a href="#cart" class="nav-link cart-link">🛒 Koszyk <span class="cart-badge">0</span></a></li>
+                    <li><a href="#" class="nav-link admin-link" id="adminLink">⚙️ Panel</a></li>
+                </ul>
+            </div>
         </div>
+    </nav>
 
-      </div>
+    <!-- HERO SECTION -->
+    <section id="home" class="hero">
+        <div class="container">
+            <div class="hero-content">
+                <h1 class="hero-title" id="heroTitle">Twoje pomysły.<br><span class="neon">Wydrukowane w 3D.</span></h1>
+                <p class="hero-subtitle" id="heroSubtitle">Profesjonalny druk 3D dla każdego projektu</p>
+                <a href="#shop" class="btn btn-primary">Zobacz sklep</a>
+            </div>
+        </div>
+    </section>
 
+    <!-- FEATURED PRODUCTS SECTION -->
+    <section class="featured-section">
+        <div class="container">
+            <h2>Popularne produkty</h2>
+            <div class="products-grid" id="featuredProducts">
+                <!-- Dynamically loaded -->
+            </div>
+        </div>
+    </section>
 
-      <div>
+    <!-- SHOP SECTION -->
+    <section id="shop" class="shop-section">
+        <div class="container">
+            <h2>Nasz sklep</h2>
+            
+            <!-- Search and Filters -->
+            <div class="shop-controls">
+                <input type="text" id="searchInput" class="search-box" placeholder="🔍 Szukaj produktu...">
+                <select id="colorFilter" class="filter-select">
+                    <option value="">Wszystkie kolory</option>
+                    <option value="czarny">Czarny</option>
+                    <option value="biały">Biały</option>
+                    <option value="szary">Szary</option>
+                    <option value="czerwony">Czerwony</option>
+                    <option value="niebieski">Niebieski</option>
+                    <option value="zielony">Zielony</option>
+                    <option value="żółty">Żółty</option>
+                    <option value="pomarańczowy">Pomarańczowy</option>
+                </select>
+                <select id="sortSelect" class="filter-select">
+                    <option value="newest">Najnowsze</option>
+                    <option value="price-low">Cena: od najniższej</option>
+                    <option value="price-high">Cena: od najwyższej</option>
+                    <option value="name">Nazwa: A-Z</option>
+                </select>
+            </div>
 
-        <h2>
-          Twoje produkty
-        </h2>
+            <!-- Products Grid -->
+            <div class="products-grid" id="productsGrid">
+                <div class="empty-state">Załadowuję produkty...</div>
+            </div>
+        </div>
+    </section>
 
-        <div id="adminProducts"></div>
+    <!-- HOW IT WORKS SECTION -->
+    <section id="how" class="how-section">
+        <div class="container">
+            <h2>Jak to działa?</h2>
+            <div class="steps">
+                <div class="step">
+                    <div class="step-number">1</div>
+                    <h3>Przeglądaj</h3>
+                    <p>Odkryj naszą kolekcję drukowanych produktów 3D</p>
+                </div>
+                <div class="step">
+                    <div class="step-number">2</div>
+                    <h3>Dodaj do koszyka</h3>
+                    <p>Wybierz produkty i dodaj je do koszyka</p>
+                </div>
+                <div class="step">
+                    <div class="step-number">3</div>
+                    <h3>Przejdź na OLX</h3>
+                    <p>Kup przez OLX z bezpieczną płatnością</p>
+                </div>
+                <div class="step">
+                    <div class="step-number">4</div>
+                    <h3>Odbierz</h3>
+                    <p>Otrzymaj swoje zamówienie w kilka dni</p>
+                </div>
+            </div>
+        </div>
+    </section>
 
-      </div>
+    <!-- ABOUT SECTION -->
+    <section id="about" class="about-section">
+        <div class="container">
+            <h2>O nas</h2>
+            <div class="about-content">
+                <div class="about-text">
+                    <p id="aboutText">
+                        3D Forge to profesjonalna pracownia specjalizująca się w druku 3D. 
+                        Tworzymy unikalne, wysokiej jakości produkty dostosowane do Twoich potrzeb.
+                    </p>
+                </div>
+                <div class="about-stats">
+                    <div class="stat">
+                        <span class="stat-number">100+</span>
+                        <span class="stat-label">Projektów</span>
+                    </div>
+                    <div class="stat">
+                        <span class="stat-number">5 dni</span>
+                        <span class="stat-label">Realizacja</span>
+                    </div>
+                    <div class="stat">
+                        <span class="stat-number">10+</span>
+                        <span class="stat-label">Kolorów</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
 
+    <!-- CART SECTION -->
+    <section id="cart" class="cart-section">
+        <div class="container">
+            <h2>Twój koszyk</h2>
+            <div class="cart-wrapper">
+                <div class="cart-items-container">
+                    <div id="cartItemsDisplay" class="cart-items">
+                        <div class="empty-cart">
+                            <p>🛒 Twój koszyk jest pusty</p>
+                            <a href="#shop" class="btn btn-primary">Przejdź do sklepu</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="cart-summary-container" id="cartSummaryContainer" style="display: none;">
+                    <div class="cart-summary">
+                        <div class="summary-row">
+                            <span>Liczba produktów:</span>
+                            <span id="cartTotalItems">0</span>
+                        </div>
+                        <div class="summary-row">
+                            <span>Razem:</span>
+                            <span class="price" id="cartTotalPrice">0 zł</span>
+                        </div>
+                        <button class="btn btn-primary" id="checkoutBtn">Kup przez OLX</button>
+                        <button class="btn btn-secondary" id="clearCartBtn">Wyczyść koszyk</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
 
+    <!-- FOOTER -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h4 id="footerBrandName">3D Forge</h4>
+                    <p>Profesjonalny druk 3D</p>
+                </div>
+                <div class="footer-section">
+                    <h4>Kontakt</h4>
+                    <p>Email: <a href="mailto:contact@3dforge.pl" id="footerEmail">contact@3dforge.pl</a></p>
+                    <p>Telefon: <a href="tel:+48123456789" id="footerPhone">+48 123 456 789</a></p>
+                </div>
+                <div class="footer-section">
+                    <h4>Nawigacja</h4>
+                    <ul>
+                        <li><a href="#shop">Sklep</a></li>
+                        <li><a href="#how">Jak to działa</a></li>
+                        <li><a href="#about">O nas</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2024 3D Forge. Wszystkie prawa zastrzeżone.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- ADMIN LOGIN MODAL -->
+    <div id="adminLoginModal" class="modal">
+        <div class="modal-content">
+            <h2>Panel Administracyjny</h2>
+            <p>Aby wejść do panelu, podaj hasło:</p>
+            <div class="login-form">
+                <input type="password" id="adminPassword" placeholder="Hasło" class="form-input">
+                <button class="btn btn-primary" id="adminLoginBtn">Zaloguj się</button>
+            </div>
+            <button class="close-modal" id="closeAdminLoginModal">✕</button>
+        </div>
     </div>
 
-  </div>
+    <!-- ADMIN PANEL MODAL -->
+    <div id="adminPanel" class="modal">
+        <div class="modal-content admin-modal-content">
+            <h2>⚙️ Panel Administracyjny</h2>
+            <div class="admin-tabs">
+                <button class="admin-tab-btn active" data-tab="products">Produkty</button>
+                <button class="admin-tab-btn" data-tab="settings">Ustawienia</button>
+            </div>
 
+            <!-- PRODUCTS TAB -->
+            <div class="admin-tab active" id="admin-products-tab">
+                <h3>Zarządzaj produktami</h3>
+                
+                <div class="admin-form">
+                    <h4>Dodaj nowy produkt</h4>
+                    <form id="addProductForm">
+                        <input type="text" id="productName" placeholder="Nazwa produktu" required class="form-input">
+                        <input type="number" id="productPrice" placeholder="Cena (zł)" min="0" step="0.01" required class="form-input">
+                        <textarea id="productDesc" placeholder="Opis produktu" required class="form-input"></textarea>
+                        <input type="text" id="productImage" placeholder="URL zdjęcia (opcjonalnie)" class="form-input">
+                        <select id="productColor" required class="form-input">
+                            <option value="">Wybierz kolor</option>
+                            <option value="czarny">Czarny</option>
+                            <option value="biały">Biały</option>
+                            <option value="szary">Szary</option>
+                            <option value="czerwony">Czerwony</option>
+                            <option value="niebieski">Niebieski</option>
+                            <option value="zielony">Zielony</option>
+                            <option value="żółty">Żółty</option>
+                            <option value="pomarańczowy">Pomarańczowy</option>
+                        </select>
+                        <input type="text" id="productOLXLink" placeholder="Link do ogłoszenia OLX" class="form-input">
+                        <label class="checkbox-label">
+                            <input type="checkbox" id="productFeatured">
+                            Wyróżniony produkt (pokaż na stronie głównej)
+                        </label>
+                        <button type="submit" class="btn btn-primary">Dodaj produkt</button>
+                    </form>
+                </div>
 
-  <!-- DANE STRONY -->
+                <div class="admin-products-list">
+                    <h4>Lista produktów</h4>
+                    <div id="adminProductsList">
+                        <p>Brak produktów</p>
+                    </div>
+                </div>
+            </div>
 
-  <div
-    id="siteTab"
-    class="admin-tab-content"
-  >
+            <!-- SETTINGS TAB -->
+            <div class="admin-tab" id="admin-settings-tab">
+                <h3>Ustawienia strony</h3>
+                
+                <div class="admin-form">
+                    <h4>Dane firmy</h4>
+                    <form id="settingsForm">
+                        <label>Nazwa firmy:</label>
+                        <input type="text" id="settingsBrandName" placeholder="3D Forge" class="form-input">
+                        
+                        <label>E-mail:</label>
+                        <input type="email" id="settingsEmail" placeholder="contact@3dforge.pl" class="form-input">
+                        
+                        <label>Telefon:</label>
+                        <input type="tel" id="settingsPhone" placeholder="+48 123 456 789" class="form-input">
+                        
+                        <label>Opis strony głównej:</label>
+                        <textarea id="settingsHeroSubtitle" placeholder="Profesjonalny druk 3D dla każdego projektu" class="form-input"></textarea>
+                        
+                        <label>Opis O nas:</label>
+                        <textarea id="settingsAboutText" placeholder="Opis Twojej firmy" class="form-input"></textarea>
+                        
+                        <button type="submit" class="btn btn-primary">Zapisz zmiany</button>
+                    </form>
+                </div>
+            </div>
 
-    <div class="admin-form">
-
-      <h2>
-        Dane strony
-      </h2>
-
-
-      <label>
-        Nazwa firmy
-      </label>
-
-      <input
-        id="siteName"
-        type="text"
-      >
-
-
-      <label>
-        E-mail
-      </label>
-
-      <input
-        id="siteEmail"
-        type="email"
-      >
-
-
-      <label>
-        Telefon
-      </label>
-
-      <input
-        id="sitePhone"
-        type="text"
-      >
-
-
-      <label>
-        Opis strony głównej
-      </label>
-
-      <textarea
-        id="siteHero"
-      ></textarea>
-
-
-      <label>
-        Tekst „O nas”
-      </label>
-
-      <textarea
-        id="siteAbout"
-      ></textarea>
-
-
-      <button
-        class="main-button"
-        onclick="saveSiteSettings()"
-      >
-        💾 Zapisz dane strony
-      </button>
-
+            <button class="close-modal" id="closeAdminPanel">✕</button>
+        </div>
     </div>
 
-  </div>
-
-</div>
-```
-
-  </section>
-
-</main>
-
-<!-- STOPKA -->
-
-<footer>
-
-  <div>
-
-```
-<strong id="footerCompany">
-  3D Forge
-</strong>
-
-<p>
-  Projekty drukowane w 3D.
-</p>
-```
-
-  </div>
-
-  <div>
-
-```
-<p id="footerEmail"></p>
-
-<p id="footerPhone"></p>
-```
-
-  </div>
-
-<button
-class="admin-link"
-onclick="openAdmin()"
-
->
-
-```
-⚙️ Panel
-```
-
-  </button>
-
-</footer>
-
-<!-- KOSZYK -->
-
-<div
-  id="cartModal"
-  class="modal"
->
-
-  <div class="modal-content">
-
-```
-<button
-  class="close"
-  onclick="closeCart()"
->
-  ×
-</button>
-
-
-<h2>
-  🛒 Twój koszyk
-</h2>
-
-
-<div id="cartItems"></div>
-
-
-<div class="cart-total">
-
-  Razem:
-
-  <strong id="cartTotal">
-    0,00 zł
-  </strong>
-
-</div>
-
-
-<div class="cart-actions">
-
-  <button
-    class="secondary-button"
-    onclick="clearCart()"
-  >
-    Wyczyść
-  </button>
-
-
-  <button
-    class="main-button"
-    onclick="buyCart()"
-  >
-    Kup przez OLX →
-  </button>
-
-</div>
-
-
-<p class="cart-info">
-  Płatność i finalizacja zamówienia odbywa się na OLX.
-</p>
-```
-
-  </div>
-
-</div>
-
-<div id="toast"></div>
-
-<script src="script.js"></script>
-
+    <script src="script.js"></script>
 </body>
 </html>
