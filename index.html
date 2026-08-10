@@ -232,18 +232,28 @@
                         <input type="text" id="productName" placeholder="Nazwa produktu" required class="form-input">
                         <input type="number" id="productPrice" placeholder="Cena (zł)" min="0" step="0.01" required class="form-input">
                         <textarea id="productDesc" placeholder="Opis produktu" required class="form-input"></textarea>
-                        <input type="text" id="productImage" placeholder="URL zdjęcia (opcjonalnie)" class="form-input">
-                        <select id="productColor" required class="form-input">
-                            <option value="">Wybierz kolor</option>
-                            <option value="czarny">Czarny</option>
-                            <option value="biały">Biały</option>
-                            <option value="szary">Szary</option>
-                            <option value="czerwony">Czerwony</option>
-                            <option value="niebieski">Niebieski</option>
-                            <option value="zielony">Zielony</option>
-                            <option value="żółty">Żółty</option>
-                            <option value="pomarańczowy">Pomarańczowy</option>
-                        </select>
+                        
+                        <h5 style="color: #00ff00; margin-top: 1rem; margin-bottom: 0.5rem;">Warianty kolorystyczne</h5>
+                        <div id="variantsContainer">
+                            <div class="variant-input-group">
+                                <label>Wariant 1:</label>
+                                <select class="variant-color form-input">
+                                    <option value="">Wybierz kolor</option>
+                                    <option value="czarny">Czarny</option>
+                                    <option value="biały">Biały</option>
+                                    <option value="szary">Szary</option>
+                                    <option value="czerwony">Czerwony</option>
+                                    <option value="niebieski">Niebieski</option>
+                                    <option value="zielony">Zielony</option>
+                                    <option value="żółty">Żółty</option>
+                                    <option value="pomarańczowy">Pomarańczowy</option>
+                                </select>
+                                <input type="text" class="variant-image form-input" placeholder="URL zdjęcia wariantu">
+                            </div>
+                        </div>
+                        
+                        <button type="button" class="btn btn-secondary" id="addVariantBtn" style="margin-top: 0.5rem; margin-bottom: 1rem;">+ Dodaj kolejny kolor</button>
+                        
                         <input type="text" id="productOLXLink" placeholder="Link do ogłoszenia OLX" class="form-input">
                         <label class="checkbox-label">
                             <input type="checkbox" id="productFeatured">
