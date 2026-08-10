@@ -1,25 +1,9 @@
-// ===== CLEAR OLD DATA ON UPDATE =====
-// Wymaż stare dane jeśli struktura produktów się zmieniła
-const STORAGE_VERSION = 'v2_variants'; // Zwiększaj tę liczbę przy każdej zmianie struktury
-const versionKey = 'forge3d_storage_version';
-const currentVersion = localStorage.getItem(versionKey);
-
-if (currentVersion !== STORAGE_VERSION) {
-    localStorage.removeItem('forge3d_products');
-    localStorage.removeItem('forge3d_cart');
-    localStorage.setItem(versionKey, STORAGE_VERSION);
-    console.log('Storage cleared - new data structure');
-}// ========== CONFIGURATION ==========
-// ZMIEŃ TO HASŁO - To jest hasło do panelu administratora
-// Uwaga: Hasło przechowywane w JavaScript aplikacji statycznej NIE jest bezpieczne!
-// Każdy użytkownik może zobaczyć hasło otwierając DevTools (F12)
-// To jest rozwiązanie tylko do testowania lokalnego. W produkcji użyj prawdziwego serwera.
-const ADMIN_PASSWORD = 'admin123'; 
+const ADMIN_PASSWORD = 'admin123';
 
 const CONFIG = {
-    storageKey: 'forge3d_products',
-    cartStorageKey: 'forge3d_cart',
-    settingsStorageKey: 'forge3d_settings',
+    storageKey: 'forge3d_products_v4',
+    cartStorageKey: 'forge3d_cart_v4',
+    settingsStorageKey: 'forge3d_settings_v4',
     defaultSettings: {
         brandName: '3D Forge',
         email: 'contact@3dforge.pl',
@@ -29,18 +13,13 @@ const CONFIG = {
     }
 };
 
-// Domyślne produkty - NOWA STRUKTURA Z WARIANTAMI
 const DEFAULT_PRODUCTS = [
     {
         id: 1,
         name: 'Porsche 911 Low-Poly',
         price: 45,
         desc: 'Model samochodu 3D o długości około 20 cm z kręcącymi się kołami.',
-        variants: [
-            { color: 'czarny', image: '' },
-            { color: 'biały', image: '' },
-            { color: 'czerwony', image: '' }
-        ],
+        variants: [{ color: 'czarny', image: '' }, { color: 'biały', image: '' }, { color: 'czerwony', image: '' }],
         olxLink: '',
         featured: true
     },
@@ -49,11 +28,7 @@ const DEFAULT_PRODUCTS = [
         name: 'Brelok Gamer',
         price: 15,
         desc: 'Mały brelok drukowany w 3D.',
-        variants: [
-            { color: 'niebieski', image: '' },
-            { color: 'czarny', image: '' },
-            { color: 'zielony', image: '' }
-        ],
+        variants: [{ color: 'niebieski', image: '' }, { color: 'czarny', image: '' }, { color: 'zielony', image: '' }],
         olxLink: '',
         featured: true
     },
@@ -62,46 +37,16 @@ const DEFAULT_PRODUCTS = [
         name: 'Mini Rakieta',
         price: 25,
         desc: 'Dekoracyjny model rakiety na biurko.',
-        variants: [
-            { color: 'pomarańczowy', image: '' },
-            { color: 'czerwony', image: '' },
-            { color: 'szary', image: '' }
-        ],
+        variants: [{ color: 'pomarańczowy', image: '' }, { color: 'czerwony', image: '' }, { color: 'szary', image: '' }],
         olxLink: '',
         featured: true
-    },
-    {
-        id: 4,
-        name: 'Smok 3D',
-        price: 35,
-        desc: 'Dekoracyjny model smoka.',
-        variants: [
-            { color: 'czerwony', image: '' },
-            { color: 'czarny', image: '' }
-        ],
-        olxLink: '',
-        featured: false
-    },
-    {
-        id: 5,
-        name: 'Brelok z imieniem',
-        price: 18,
-        desc: 'Personalizowany brelok z wybranym imieniem.',
-        variants: [
-            { color: 'zielony', image: '' },
-            { color: 'biały', image: '' }
-        ],
-        olxLink: '',
-        featured: false
     }
 ];
 
-// ========== STATE ==========
 let products = [];
 let cart = [];
 let settings = {};
 
-// ========== INITIALIZATION ==========
 document.addEventListener('DOMContentLoaded', function() {
     loadSettings();
     loadProducts();
@@ -114,10 +59,9 @@ document.addEventListener('DOMContentLoaded', function() {
     setupAdminPanel();
 });
 
-// ========== SETTINGS MANAGEMENT ==========
 function loadSettings() {
     const stored = localStorage.getItem(CONFIG.settingsStorageKey);
-    settings = stored ? JSON.parse(stored) : { ...CONFIG.defaultSettings };
+    settings = stored ? JSON.parse(stored) : JSON.parse(JSON.stringify(CONFIG.defaultSettings));
 }
 
 function saveSettings() {
@@ -125,25 +69,38 @@ function saveSettings() {
 }
 
 function updatePageSettings() {
-    document.getElementById('navBrandName').textContent = settings.brandName;
-    document.getElementById('heroSubtitle').textContent = settings.heroSubtitle;
-    document.getElementById('aboutText').textContent = settings.aboutText;
-    document.getElementById('footerBrandName').textContent = settings.brandName;
+    const els = {
+        navBrandName: document.getElementById('navBrandName'),
+        heroSubtitle: document.getElementById('heroSubtitle'),
+        aboutText: document.getElementById('aboutText'),
+        footerBrandName: document.getElementById('footerBrandName'),
+        footerEmail: document.getElementById('footerEmail'),
+        footerPhone: document.getElementById('footerPhone')
+    };
     
-    const emailLink = document.getElementById('footerEmail');
-    emailLink.textContent = settings.email;
-    emailLink.href = `mailto:${settings.email}`;
-    
-    const phoneLink = document.getElementById('footerPhone');
-    phoneLink.textContent = settings.phone;
-    phoneLink.href = `tel:${settings.phone.replace(/\s/g, '')}`;
+    if (els.navBrandName) els.navBrandName.textContent = settings.brandName;
+    if (els.heroSubtitle) els.heroSubtitle.textContent = settings.heroSubtitle;
+    if (els.aboutText) els.aboutText.textContent = settings.aboutText;
+    if (els.footerBrandName) els.footerBrandName.textContent = settings.brandName;
+    if (els.footerEmail) {
+        els.footerEmail.textContent = settings.email;
+        els.footerEmail.href = `mailto:${settings.email}`;
+    }
+    if (els.footerPhone) {
+        els.footerPhone.textContent = settings.phone;
+        els.footerPhone.href = `tel:${settings.phone.replace(/\s/g, '')}`;
+    }
 }
 
-// ========== PRODUCTS MANAGEMENT ==========
 function loadProducts() {
     const stored = localStorage.getItem(CONFIG.storageKey);
     if (stored) {
-        products = JSON.parse(stored);
+        try {
+            products = JSON.parse(stored);
+        } catch (e) {
+            products = JSON.parse(JSON.stringify(DEFAULT_PRODUCTS));
+            saveProducts();
+        }
     } else {
         products = JSON.parse(JSON.stringify(DEFAULT_PRODUCTS));
         saveProducts();
@@ -160,7 +117,7 @@ function addProduct(productData) {
         name: productData.name,
         price: productData.price,
         desc: productData.desc,
-        variants: productData.variants || [{ color: productData.color || 'czarny', image: productData.image || '' }],
+        variants: productData.variants || [{ color: 'czarny', image: '' }],
         olxLink: productData.olxLink || '',
         featured: productData.featured || false
     };
@@ -177,7 +134,6 @@ function deleteProduct(productId) {
     renderAdminProductsList();
 }
 
-// ========== CART MANAGEMENT ==========
 function loadCart() {
     const stored = localStorage.getItem(CONFIG.cartStorageKey);
     cart = stored ? JSON.parse(stored) : [];
@@ -191,17 +147,9 @@ function addToCart(productId, selectedColor = null) {
     const product = products.find(p => p.id === productId);
     if (!product) return;
 
-    // Jeśli nie wybrano koloru, weź pierwszy wariant
-    const variant = selectedColor 
-        ? product.variants.find(v => v.color === selectedColor)
-        : product.variants[0];
-    
-    if (!variant) {
-        showNotification('Wybierz kolor produktu!');
-        return;
-    }
+    const variant = selectedColor ? product.variants.find(v => v.color === selectedColor) : product.variants[0];
+    if (!variant) return;
 
-    // Sprawdź czy taki wariant już istnieje w koszyku
     const cartKey = `${productId}-${variant.color}`;
     const existingItem = cart.find(item => item.cartKey === cartKey);
     
@@ -249,46 +197,43 @@ function clearCart() {
     }
 }
 
-// ========== RENDERING ==========
 function renderProducts(filteredProducts = null) {
     const grid = document.getElementById('productsGrid');
+    if (!grid) return;
+    
     const productsToShow = filteredProducts || products;
 
     if (productsToShow.length === 0) {
-        grid.innerHTML = '<div class="empty-state">Brak produktów spełniających kryteria</div>';
+        grid.innerHTML = '<div class="empty-state">Brak produktów</div>';
         return;
     }
 
     grid.innerHTML = productsToShow.map(product => {
-        const firstVariant = product.variants[0];
-        const variantOptions = product.variants.map(v => 
-            `<option value="${escapeHtml(v.color)}">${escapeHtml(v.color.charAt(0).toUpperCase() + v.color.slice(1))}</option>`
-        ).join('');
+        if (!product.variants || product.variants.length === 0) return '';
         
-        return `
-            <div class="product-card">
-                <div class="product-image" id="productImage-${product.id}">
-                    ${firstVariant.image ? `<img src="${escapeHtml(firstVariant.image)}" alt="${escapeHtml(product.name)}" id="productImg-${product.id}">` : '<span>3D</span>'}
+        const firstVariant = product.variants[0];
+        const variantOptions = product.variants.map(v => `<option value="${v.color}">${v.color.charAt(0).toUpperCase() + v.color.slice(1)}</option>`).join('');
+        
+        return `<div class="product-card">
+            <div class="product-image" id="productImage-${product.id}">
+                ${firstVariant.image ? `<img src="${firstVariant.image}" alt="${product.name}" id="productImg-${product.id}">` : '<span>3D</span>'}
+            </div>
+            <div class="product-info">
+                <h3 class="product-name">${product.name}</h3>
+                <p class="product-desc">${product.desc}</p>
+                <div class="product-variant-selector">
+                    <label for="variant-${product.id}">Kolor:</label>
+                    <select id="variant-${product.id}" class="product-color-select" onchange="updateProductImage(${product.id})">
+                        ${variantOptions}
+                    </select>
                 </div>
-                <div class="product-info">
-                    <h3 class="product-name">${escapeHtml(product.name)}</h3>
-                    <p class="product-desc">${escapeHtml(product.desc)}</p>
-                    
-                    <div class="product-variant-selector">
-                        <label for="variant-${product.id}">Kolor:</label>
-                        <select id="variant-${product.id}" class="product-color-select" onchange="updateProductImage(${product.id})">
-                            ${variantOptions}
-                        </select>
-                    </div>
-                    
-                    <div class="product-price">${product.price} zł</div>
-                    <div class="product-actions">
-                        <button class="btn btn-primary btn-small" onclick="addToCartWithVariant(${product.id})">Dodaj do koszyka</button>
-                        ${product.olxLink ? `<a href="${escapeHtml(product.olxLink)}" target="_blank" class="btn btn-secondary btn-small">Kup na OLX</a>` : '<button class="btn btn-secondary btn-small" disabled>OLX niedostępny</button>'}
-                    </div>
+                <div class="product-price">${product.price} zł</div>
+                <div class="product-actions">
+                    <button class="btn btn-primary btn-small" onclick="addToCartWithVariant(${product.id})">Dodaj do koszyka</button>
+                    ${product.olxLink ? `<a href="${product.olxLink}" target="_blank" class="btn btn-secondary btn-small">Kup na OLX</a>` : '<button class="btn btn-secondary btn-small" disabled>OLX niedostępny</button>'}
                 </div>
             </div>
-        `;
+        </div>`;
     }).join('');
 }
 
@@ -303,14 +248,8 @@ function updateProductImage(productId) {
     if (!variant) return;
 
     const imageContainer = document.getElementById(`productImage-${productId}`);
-    const imgElement = document.getElementById(`productImg-${productId}`);
-
     if (variant.image) {
-        if (imgElement) {
-            imgElement.src = variant.image;
-        } else {
-            imageContainer.innerHTML = `<img src="${escapeHtml(variant.image)}" alt="${escapeHtml(product.name)}" id="productImg-${productId}">`;
-        }
+        imageContainer.innerHTML = `<img src="${variant.image}" alt="${product.name}" id="productImg-${productId}">`;
     } else {
         imageContainer.innerHTML = '<span>3D</span>';
     }
@@ -324,6 +263,8 @@ function addToCartWithVariant(productId) {
 
 function renderFeaturedProducts() {
     const grid = document.getElementById('featuredProducts');
+    if (!grid) return;
+    
     const featured = products.filter(p => p.featured).slice(0, 3);
     
     if (featured.length === 0) {
@@ -332,34 +273,30 @@ function renderFeaturedProducts() {
     }
     
     grid.innerHTML = featured.map(product => {
+        if (!product.variants || product.variants.length === 0) return '';
+        
         const firstVariant = product.variants[0];
-        const variantOptions = product.variants.map(v => 
-            `<option value="${escapeHtml(v.color)}">${escapeHtml(v.color.charAt(0).toUpperCase() + v.color.slice(1))}</option>`
-        ).join('');
+        const variantOptions = product.variants.map(v => `<option value="${v.color}">${v.color.charAt(0).toUpperCase() + v.color.slice(1)}</option>`).join('');
 
-        return `
-            <div class="product-card">
-                <div class="product-image" id="productImage-${product.id}">
-                    ${firstVariant.image ? `<img src="${escapeHtml(firstVariant.image)}" alt="${escapeHtml(product.name)}" id="productImg-${product.id}">` : '<span>3D</span>'}
+        return `<div class="product-card">
+            <div class="product-image" id="productImage-${product.id}">
+                ${firstVariant.image ? `<img src="${firstVariant.image}" alt="${product.name}" id="productImg-${product.id}">` : '<span>3D</span>'}
+            </div>
+            <div class="product-info">
+                <h3 class="product-name">${product.name}</h3>
+                <p class="product-desc">${product.desc}</p>
+                <div class="product-variant-selector">
+                    <label for="variant-${product.id}">Kolor:</label>
+                    <select id="variant-${product.id}" class="product-color-select" onchange="updateProductImage(${product.id})">
+                        ${variantOptions}
+                    </select>
                 </div>
-                <div class="product-info">
-                    <h3 class="product-name">${escapeHtml(product.name)}</h3>
-                    <p class="product-desc">${escapeHtml(product.desc)}</p>
-                    
-                    <div class="product-variant-selector">
-                        <label for="variant-${product.id}">Kolor:</label>
-                        <select id="variant-${product.id}" class="product-color-select" onchange="updateProductImage(${product.id})">
-                            ${variantOptions}
-                        </select>
-                    </div>
-                    
-                    <div class="product-price">${product.price} zł</div>
-                    <div class="product-actions">
-                        <button class="btn btn-primary btn-small" onclick="addToCartWithVariant(${product.id})">Dodaj do koszyka</button>
-                    </div>
+                <div class="product-price">${product.price} zł</div>
+                <div class="product-actions">
+                    <button class="btn btn-primary btn-small" onclick="addToCartWithVariant(${product.id})">Dodaj do koszyka</button>
                 </div>
             </div>
-        `;
+        </div>`;
     }).join('');
 }
 
@@ -368,234 +305,195 @@ function updateCartDisplay() {
     const container = document.getElementById('cartItemsDisplay');
     const summaryContainer = document.getElementById('cartSummaryContainer');
 
+    if (!container) return;
+
     const totalItems = cart.reduce((sum, item) => sum + item.quantity, 0);
-    badge.textContent = totalItems;
+    if (badge) badge.textContent = totalItems;
 
     if (cart.length === 0) {
-        container.innerHTML = `
-            <div class="empty-cart">
-                <p>🛒 Twój koszyk jest pusty</p>
-                <a href="#shop" class="btn btn-primary">Przejdź do sklepu</a>
-            </div>
-        `;
-        summaryContainer.style.display = 'none';
+        container.innerHTML = '<div class="empty-cart"><p>🛒 Twój koszyk jest pusty</p><a href="#shop" class="btn btn-primary">Przejdź do sklepu</a></div>';
+        if (summaryContainer) summaryContainer.style.display = 'none';
         return;
     }
 
-    container.innerHTML = cart.map((item, index) => `
-        <div class="cart-item">
-            <div class="cart-item-image">
-                ${item.image ? `<img src="${escapeHtml(item.image)}" alt="${escapeHtml(item.name)}">` : '<span>3D</span>'}
-            </div>
-            <div class="cart-item-details">
-                <div class="cart-item-name">${escapeHtml(item.name)}</div>
-                <div class="cart-item-color">Kolor: <strong>${escapeHtml(item.color.charAt(0).toUpperCase() + item.color.slice(1))}</strong></div>
-                <div class="cart-item-price">${item.price} zł</div>
-                <div class="quantity-control">
-                    <button class="btn btn-secondary" onclick="updateQuantity(${index}, ${item.quantity - 1})">−</button>
-                    <span>Ilość: ${item.quantity}</span>
-                    <button class="btn btn-secondary" onclick="updateQuantity(${index}, ${item.quantity + 1})">+</button>
-                    <button class="btn btn-secondary" onclick="removeFromCart(${index})">✕</button>
-                </div>
+    container.innerHTML = cart.map((item, index) => `<div class="cart-item">
+        <div class="cart-item-image">${item.image ? `<img src="${item.image}" alt="${item.name}">` : '<span>3D</span>'}</div>
+        <div class="cart-item-details">
+            <div class="cart-item-name">${item.name}</div>
+            <div class="cart-item-color">Kolor: <strong>${item.color.charAt(0).toUpperCase() + item.color.slice(1)}</strong></div>
+            <div class="cart-item-price">${item.price} zł</div>
+            <div class="quantity-control">
+                <button class="btn btn-secondary" onclick="updateQuantity(${index}, ${item.quantity - 1})">−</button>
+                <span>Ilość: ${item.quantity}</span>
+                <button class="btn btn-secondary" onclick="updateQuantity(${index}, ${item.quantity + 1})">+</button>
+                <button class="btn btn-secondary" onclick="removeFromCart(${index})">✕</button>
             </div>
         </div>
-    `).join('');
+    </div>`).join('');
 
     const total = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
-    document.getElementById('cartTotalItems').textContent = totalItems;
-    document.getElementById('cartTotalPrice').textContent = total.toFixed(2) + ' zł';
-    summaryContainer.style.display = 'block';
+    const totalItemsEl = document.getElementById('cartTotalItems');
+    const totalPriceEl = document.getElementById('cartTotalPrice');
+    
+    if (totalItemsEl) totalItemsEl.textContent = totalItems;
+    if (totalPriceEl) totalPriceEl.textContent = total.toFixed(2) + ' zł';
+    if (summaryContainer) summaryContainer.style.display = 'block';
 }
 
-// ========== FILTERING & SORTING ==========
 function filterAndSort() {
     const search = document.getElementById('searchInput').value.toLowerCase();
     const color = document.getElementById('colorFilter').value;
     const sort = document.getElementById('sortSelect').value;
 
     let filtered = products.filter(product => {
-        const matchesSearch = product.name.toLowerCase().includes(search) || 
-                            product.desc.toLowerCase().includes(search);
-        
+        const matchesSearch = product.name.toLowerCase().includes(search) || product.desc.toLowerCase().includes(search);
         let matchesColor = true;
-        if (color) {
-            matchesColor = product.variants.some(v => v.color === color);
-        }
-        
+        if (color) matchesColor = product.variants.some(v => v.color === color);
         return matchesSearch && matchesColor;
     });
 
-    // Sortowanie
     switch(sort) {
-        case 'price-low':
-            filtered.sort((a, b) => a.price - b.price);
-            break;
-        case 'price-high':
-            filtered.sort((a, b) => b.price - a.price);
-            break;
-        case 'name':
-            filtered.sort((a, b) => a.name.localeCompare(b.name));
-            break;
-        case 'newest':
-        default:
-            filtered.sort((a, b) => b.id - a.id);
+        case 'price-low': filtered.sort((a, b) => a.price - b.price); break;
+        case 'price-high': filtered.sort((a, b) => b.price - a.price); break;
+        case 'name': filtered.sort((a, b) => a.name.localeCompare(b.name)); break;
+        default: filtered.sort((a, b) => b.id - a.id);
     }
 
     renderProducts(filtered);
 }
 
-// ========== ADMIN PANEL ==========
 function setupAdminPanel() {
     const adminLink = document.getElementById('adminLink');
-    const adminLoginModal = document.getElementById('adminLoginModal');
-    const adminPanel = document.getElementById('adminPanel');
-    const adminLoginBtn = document.getElementById('adminLoginBtn');
-    const adminPassword = document.getElementById('adminPassword');
-    const closeAdminLoginBtn = document.getElementById('closeAdminLoginModal');
-    const closeAdminPanelBtn = document.getElementById('closeAdminPanel');
+    if (!adminLink) return;
 
-    // Otwieranie logowania
     adminLink.addEventListener('click', (e) => {
         e.preventDefault();
-        adminLoginModal.style.display = 'block';
-        adminPassword.value = '';
-        adminPassword.focus();
-    });
-
-    // Logowanie
-    adminLoginBtn.addEventListener('click', () => {
-        if (adminPassword.value === ADMIN_PASSWORD) {
-            adminLoginModal.style.display = 'none';
-            adminPanel.style.display = 'block';
-            loadAdminSettings();
-            renderAdminProductsList();
-        } else {
-            alert('Błędne hasło!');
-            adminPassword.value = '';
+        const modal = document.getElementById('adminLoginModal');
+        if (modal) {
+            modal.style.display = 'block';
+            const pwd = document.getElementById('adminPassword');
+            if (pwd) pwd.focus();
         }
     });
 
-    // Enter do zalogowania
-    adminPassword.addEventListener('keypress', (e) => {
-        if (e.key === 'Enter') {
-            adminLoginBtn.click();
-        }
+    const loginBtn = document.getElementById('adminLoginBtn');
+    if (loginBtn) {
+        loginBtn.addEventListener('click', () => {
+            const pwd = document.getElementById('adminPassword');
+            if (pwd && pwd.value === ADMIN_PASSWORD) {
+                const loginModal = document.getElementById('adminLoginModal');
+                const adminPanel = document.getElementById('adminPanel');
+                if (loginModal) loginModal.style.display = 'none';
+                if (adminPanel) adminPanel.style.display = 'block';
+                loadAdminSettings();
+                renderAdminProductsList();
+            } else {
+                alert('Błędne hasło!');
+                if (pwd) pwd.value = '';
+            }
+        });
+    }
+
+    const pwd = document.getElementById('adminPassword');
+    if (pwd) {
+        pwd.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                const btn = document.getElementById('adminLoginBtn');
+                if (btn) btn.click();
+            }
+        });
+    }
+
+    document.getElementById('closeAdminLoginModal')?.addEventListener('click', () => {
+        const modal = document.getElementById('adminLoginModal');
+        if (modal) modal.style.display = 'none';
     });
 
-    // Zamykanie
-    closeAdminLoginBtn.addEventListener('click', () => {
-        adminLoginModal.style.display = 'none';
+    document.getElementById('closeAdminPanel')?.addEventListener('click', () => {
+        const modal = document.getElementById('adminPanel');
+        if (modal) modal.style.display = 'none';
     });
 
-    closeAdminPanelBtn.addEventListener('click', () => {
-        adminPanel.style.display = 'none';
-    });
-
-    // Tabulatory
     document.querySelectorAll('.admin-tab-btn').forEach(btn => {
         btn.addEventListener('click', () => {
             const tab = btn.dataset.tab;
-            
             document.querySelectorAll('.admin-tab-btn').forEach(b => b.classList.remove('active'));
             document.querySelectorAll('.admin-tab').forEach(t => t.classList.remove('active'));
-            
             btn.classList.add('active');
-            document.getElementById(`admin-${tab}-tab`).classList.add('active');
+            const tabEl = document.getElementById(`admin-${tab}-tab`);
+            if (tabEl) tabEl.classList.add('active');
         });
     });
 
-    // Dodawanie produktu
-    document.getElementById('addProductForm').addEventListener('submit', (e) => {
-        e.preventDefault();
-        
-        // Zbierz warianty
-        const variantInputs = document.querySelectorAll('.variant-input-group');
-        const variants = [];
-        
-        variantInputs.forEach(group => {
-            const colorSelect = group.querySelector('.variant-color');
-            const imageInput = group.querySelector('.variant-image');
+    const addProductForm = document.getElementById('addProductForm');
+    if (addProductForm) {
+        addProductForm.addEventListener('submit', (e) => {
+            e.preventDefault();
             
-            if (colorSelect && colorSelect.value) {
-                variants.push({
-                    color: colorSelect.value,
-                    image: imageInput ? imageInput.value : ''
-                });
-            }
-        });
-
-        // Jeśli brak wariantów, użyj starego formatu (kompatybilność)
-        if (variants.length === 0) {
-            variants.push({
-                color: document.getElementById('productColor').value || 'czarny',
-                image: document.getElementById('productImage').value || ''
+            const variantInputs = document.querySelectorAll('.variant-input-group');
+            const variants = [];
+            
+            variantInputs.forEach(group => {
+                const colorSelect = group.querySelector('.variant-color');
+                const imageInput = group.querySelector('.variant-image');
+                if (colorSelect && colorSelect.value) {
+                    variants.push({ color: colorSelect.value, image: imageInput ? imageInput.value : '' });
+                }
             });
-        }
 
-        const newProduct = {
-            name: document.getElementById('productName').value,
-            price: parseFloat(document.getElementById('productPrice').value),
-            desc: document.getElementById('productDesc').value,
-            variants: variants,
-            olxLink: document.getElementById('productOLXLink').value,
-            featured: document.getElementById('productFeatured').checked
-        };
+            if (variants.length === 0) {
+                alert('Dodaj przynajmniej jeden wariant koloru!');
+                return;
+            }
 
-        addProduct(newProduct);
-        renderProducts();
-        renderFeaturedProducts();
-        
-        document.getElementById('addProductForm').reset();
-        resetVariantInputs();
-        renderAdminProductsList();
-        showNotification('Produkt dodany!');
-    });
+            const newProduct = {
+                name: document.getElementById('productName').value,
+                price: parseFloat(document.getElementById('productPrice').value),
+                desc: document.getElementById('productDesc').value,
+                variants: variants,
+                olxLink: document.getElementById('productOLXLink').value,
+                featured: document.getElementById('productFeatured').checked
+            };
 
-    // Zapis ustawień
-    document.getElementById('settingsForm').addEventListener('submit', (e) => {
-        e.preventDefault();
-        
-        settings.brandName = document.getElementById('settingsBrandName').value || settings.brandName;
-        settings.email = document.getElementById('settingsEmail').value || settings.email;
-        settings.phone = document.getElementById('settingsPhone').value || settings.phone;
-        settings.heroSubtitle = document.getElementById('settingsHeroSubtitle').value || settings.heroSubtitle;
-        settings.aboutText = document.getElementById('settingsAboutText').value || settings.aboutText;
-        
-        saveSettings();
-        updatePageSettings();
-        showNotification('Ustawienia zapisane!');
-    });
-
-    // Przycisk dodawania wariantów
-    const addVariantBtn = document.getElementById('addVariantBtn');
-    if (addVariantBtn) {
-        addVariantBtn.addEventListener('click', addVariantInput);
+            addProduct(newProduct);
+            renderProducts();
+            renderFeaturedProducts();
+            addProductForm.reset();
+            resetVariantInputs();
+            renderAdminProductsList();
+            showNotification('Produkt dodany!');
+        });
     }
+
+    const settingsForm = document.getElementById('settingsForm');
+    if (settingsForm) {
+        settingsForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            settings.brandName = document.getElementById('settingsBrandName').value || settings.brandName;
+            settings.email = document.getElementById('settingsEmail').value || settings.email;
+            settings.phone = document.getElementById('settingsPhone').value || settings.phone;
+            settings.heroSubtitle = document.getElementById('settingsHeroSubtitle').value || settings.heroSubtitle;
+            settings.aboutText = document.getElementById('settingsAboutText').value || settings.aboutText;
+            saveSettings();
+            updatePageSettings();
+            showNotification('Ustawienia zapisane!');
+        });
+    }
+
+    const addVariantBtn = document.getElementById('addVariantBtn');
+    if (addVariantBtn) addVariantBtn.addEventListener('click', addVariantInput);
 }
 
 function addVariantInput() {
     const container = document.getElementById('variantsContainer');
     if (!container) return;
-
     const index = container.querySelectorAll('.variant-input-group').length;
-    const html = `
-        <div class="variant-input-group">
-            <label>Wariant ${index + 1}:</label>
-            <select class="variant-color form-input">
-                <option value="">Wybierz kolor</option>
-                <option value="czarny">Czarny</option>
-                <option value="biały">Biały</option>
-                <option value="szary">Szary</option>
-                <option value="czerwony">Czerwony</option>
-                <option value="niebieski">Niebieski</option>
-                <option value="zielony">Zielony</option>
-                <option value="żółty">Żółty</option>
-                <option value="pomarańczowy">Pomarańczowy</option>
-            </select>
-            <input type="text" class="variant-image form-input" placeholder="URL zdjęcia wariantu">
-            <button type="button" class="btn btn-secondary btn-small" onclick="removeVariantInput(this)">Usuń</button>
-        </div>
-    `;
+    const html = `<div class="variant-input-group">
+        <label>Wariant ${index + 1}:</label>
+        <select class="variant-color form-input"><option value="">Wybierz kolor</option><option value="czarny">Czarny</option><option value="biały">Biały</option><option value="szary">Szary</option><option value="czerwony">Czerwony</option><option value="niebieski">Niebieski</option><option value="zielony">Zielony</option><option value="żółty">Żółty</option><option value="pomarańczowy">Pomarańczowy</option></select>
+        <input type="text" class="variant-image form-input" placeholder="URL zdjęcia wariantu">
+        <button type="button" class="btn btn-secondary btn-small" onclick="removeVariantInput(this)">Usuń</button>
+    </div>`;
     container.insertAdjacentHTML('beforeend', html);
 }
 
@@ -606,23 +504,11 @@ function removeVariantInput(btn) {
 function resetVariantInputs() {
     const container = document.getElementById('variantsContainer');
     if (container) {
-        container.innerHTML = `
-            <div class="variant-input-group">
-                <label>Wariant 1:</label>
-                <select class="variant-color form-input">
-                    <option value="">Wybierz kolor</option>
-                    <option value="czarny">Czarny</option>
-                    <option value="biały">Biały</option>
-                    <option value="szary">Szary</option>
-                    <option value="czerwony">Czerwony</option>
-                    <option value="niebieski">Niebieski</option>
-                    <option value="zielony">Zielony</option>
-                    <option value="żółty">Żółty</option>
-                    <option value="pomarańczowy">Pomarańczowy</option>
-                </select>
-                <input type="text" class="variant-image form-input" placeholder="URL zdjęcia wariantu">
-            </div>
-        `;
+        container.innerHTML = `<div class="variant-input-group">
+            <label>Wariant 1:</label>
+            <select class="variant-color form-input"><option value="">Wybierz kolor</option><option value="czarny">Czarny</option><option value="biały">Biały</option><option value="szary">Szary</option><option value="czerwony">Czerwony</option><option value="niebieski">Niebieski</option><option value="zielony">Zielony</option><option value="żółty">Żółty</option><option value="pomarańczowy">Pomarańczowy</option></select>
+            <input type="text" class="variant-image form-input" placeholder="URL zdjęcia wariantu">
+        </div>`;
     }
 }
 
@@ -636,78 +522,41 @@ function loadAdminSettings() {
 
 function renderAdminProductsList() {
     const list = document.getElementById('adminProductsList');
-    
+    if (!list) return;
     if (products.length === 0) {
         list.innerHTML = '<p>Brak produktów</p>';
         return;
     }
-    
     list.innerHTML = products.map(product => {
-        const variantsText = product.variants.map(v => 
-            `${v.color.charAt(0).toUpperCase() + v.color.slice(1)}`
-        ).join(', ');
-
-        return `
-            <div class="admin-product">
-                <div class="admin-product-info">
-                    <div class="admin-product-name">${escapeHtml(product.name)}</div>
-                    <div class="admin-product-price">${product.price} zł | Warianty: ${escapeHtml(variantsText)}</div>
-                </div>
-                <button onclick="deleteProduct(${product.id})">Usuń</button>
+        const variantsText = product.variants.map(v => v.color.charAt(0).toUpperCase() + v.color.slice(1)).join(', ');
+        return `<div class="admin-product">
+            <div class="admin-product-info">
+                <div class="admin-product-name">${product.name}</div>
+                <div class="admin-product-price">${product.price} zł | Warianty: ${variantsText}</div>
             </div>
-        `;
+            <button onclick="deleteProduct(${product.id})">Usuń</button>
+        </div>`;
     }).join('');
 }
 
-// ========== CHECKOUT ==========
 function checkout() {
     if (cart.length === 0) {
         alert('Koszyk jest pusty!');
         return;
     }
-
-    // Sprawdzanie czy wszystkie produkty mają linki OLX
     const itemsWithoutOLX = cart.filter(item => !item.olxLink);
-    
     if (itemsWithoutOLX.length > 0) {
-        alert('Niestety, niektóre produkty nie mają jeszcze linku do OLX. Spróbuj później!');
+        alert('Niektóre produkty nie mają linku do OLX!');
         return;
     }
-
-    // Otwieranie pierwszego linku OLX
-    const firstLink = cart[0].olxLink;
-    window.open(firstLink, '_blank');
-}
-
-// ========== UTILITIES ==========
-function escapeHtml(text) {
-    const map = {
-        '&': '&amp;',
-        '<': '&lt;',
-        '>': '&gt;',
-        '"': '&quot;',
-        "'": '&#039;'
-    };
-    return text.replace(/[&<>"']/g, m => map[m]);
+    window.open(cart[0].olxLink, '_blank');
 }
 
 function showNotification(message) {
     const notification = document.createElement('div');
-    notification.style.cssText = `
-        position: fixed;
-        top: 100px;
-        right: 20px;
-        background-color: #00ff00;
-        color: #000;
-        padding: 1rem 1.5rem;
-        border-radius: 8px;
-        font-weight: 600;
-        z-index: 2000;
-        animation: slideDown 0.3s ease;
-    `;
+    notification.style.cssText = 'position: fixed; top: 100px; right: 20px; background-color: #00ff00; color: #000; padding: 1rem 1.5rem; border-radius: 8px; font-weight: 600; z-index: 2000; animation: slideDown 0.3s ease;';
     notification.textContent = message;
     document.body.appendChild(notification);
-
     setTimeout(() => {
         notification.style.opacity = '0';
         notification.style.transition = 'opacity 0.3s ease';
@@ -715,41 +564,26 @@ function showNotification(message) {
     }, 3000);
 }
 
-// ========== EVENT LISTENERS ==========
 function setupEventListeners() {
-    // Mobilne menu
     const menuToggle = document.getElementById('menuToggle');
     const navMenu = document.getElementById('navMenu');
-    
-    menuToggle.addEventListener('click', () => {
-        navMenu.classList.toggle('active');
-    });
-
-    document.querySelectorAll('.nav-link').forEach(link => {
-        link.addEventListener('click', () => {
-            navMenu.classList.remove('active');
+    if (menuToggle && navMenu) {
+        menuToggle.addEventListener('click', () => navMenu.classList.toggle('active'));
+        document.querySelectorAll('.nav-link').forEach(link => {
+            link.addEventListener('click', () => navMenu.classList.remove('active'));
         });
-    });
+    }
 
-    // Wyszukiwanie i filtry
-    document.getElementById('searchInput').addEventListener('input', filterAndSort);
-    document.getElementById('colorFilter').addEventListener('change', filterAndSort);
-    document.getElementById('sortSelect').addEventListener('change', filterAndSort);
+    document.getElementById('searchInput')?.addEventListener('input', filterAndSort);
+    document.getElementById('colorFilter')?.addEventListener('change', filterAndSort);
+    document.getElementById('sortSelect')?.addEventListener('change', filterAndSort);
+    document.getElementById('clearCartBtn')?.addEventListener('click', clearCart);
+    document.getElementById('checkoutBtn')?.addEventListener('click', checkout);
 
-    // Koszyk
-    document.getElementById('clearCartBtn').addEventListener('click', clearCart);
-    document.getElementById('checkoutBtn').addEventListener('click', checkout);
-
-    // Zamykanie modali klikając poza nimi
     window.addEventListener('click', (e) => {
         const adminLoginModal = document.getElementById('adminLoginModal');
         const adminPanel = document.getElementById('adminPanel');
-        
-        if (e.target === adminLoginModal) {
-            adminLoginModal.style.display = 'none';
-        }
-        if (e.target === adminPanel) {
-            adminPanel.style.display = 'none';
-        }
+        if (e.target === adminLoginModal) adminLoginModal.style.display = 'none';
+        if (e.target === adminPanel) adminPanel.style.display = 'none';
     });
 }
