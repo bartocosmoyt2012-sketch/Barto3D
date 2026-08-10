@@ -1,4 +1,15 @@
-// ========== CONFIGURATION ==========
+// ===== CLEAR OLD DATA ON UPDATE =====
+// Wymaż stare dane jeśli struktura produktów się zmieniła
+const STORAGE_VERSION = 'v2_variants'; // Zwiększaj tę liczbę przy każdej zmianie struktury
+const versionKey = 'forge3d_storage_version';
+const currentVersion = localStorage.getItem(versionKey);
+
+if (currentVersion !== STORAGE_VERSION) {
+    localStorage.removeItem('forge3d_products');
+    localStorage.removeItem('forge3d_cart');
+    localStorage.setItem(versionKey, STORAGE_VERSION);
+    console.log('Storage cleared - new data structure');
+}// ========== CONFIGURATION ==========
 // ZMIEŃ TO HASŁO - To jest hasło do panelu administratora
 // Uwaga: Hasło przechowywane w JavaScript aplikacji statycznej NIE jest bezpieczne!
 // Każdy użytkownik może zobaczyć hasło otwierając DevTools (F12)
