@@ -18,15 +18,18 @@ const CONFIG = {
     }
 };
 
-// Domyślne produkty
+// Domyślne produkty - NOWA STRUKTURA Z WARIANTAMI
 const DEFAULT_PRODUCTS = [
     {
         id: 1,
         name: 'Porsche 911 Low-Poly',
         price: 45,
         desc: 'Model samochodu 3D o długości około 20 cm z kręcącymi się kołami.',
-        image: '',
-        color: 'czarny',
+        variants: [
+            { color: 'czarny', image: '' },
+            { color: 'biały', image: '' },
+            { color: 'czerwony', image: '' }
+        ],
         olxLink: '',
         featured: true
     },
@@ -35,8 +38,11 @@ const DEFAULT_PRODUCTS = [
         name: 'Brelok Gamer',
         price: 15,
         desc: 'Mały brelok drukowany w 3D.',
-        image: '',
-        color: 'niebieski',
+        variants: [
+            { color: 'niebieski', image: '' },
+            { color: 'czarny', image: '' },
+            { color: 'zielony', image: '' }
+        ],
         olxLink: '',
         featured: true
     },
@@ -45,8 +51,11 @@ const DEFAULT_PRODUCTS = [
         name: 'Mini Rakieta',
         price: 25,
         desc: 'Dekoracyjny model rakiety na biurko.',
-        image: '',
-        color: 'pomarańczowy',
+        variants: [
+            { color: 'pomarańczowy', image: '' },
+            { color: 'czerwony', image: '' },
+            { color: 'szary', image: '' }
+        ],
         olxLink: '',
         featured: true
     },
@@ -55,8 +64,10 @@ const DEFAULT_PRODUCTS = [
         name: 'Smok 3D',
         price: 35,
         desc: 'Dekoracyjny model smoka.',
-        image: '',
-        color: 'czerwony',
+        variants: [
+            { color: 'czerwony', image: '' },
+            { color: 'czarny', image: '' }
+        ],
         olxLink: '',
         featured: false
     },
@@ -65,8 +76,10 @@ const DEFAULT_PRODUCTS = [
         name: 'Brelok z imieniem',
         price: 18,
         desc: 'Personalizowany brelok z wybranym imieniem.',
-        image: '',
-        color: 'zielony',
+        variants: [
+            { color: 'zielony', image: '' },
+            { color: 'biały', image: '' }
+        ],
         olxLink: '',
         featured: false
     }
@@ -133,7 +146,11 @@ function saveProducts() {
 function addProduct(productData) {
     const newProduct = {
         id: Date.now(),
-        ...productData,
+        name: productData.name,
+        price: productData.price,
+        desc: productData.desc,
+        variants: productData.variants || [{ color: productData.color || 'czarny', image: productData.image || '' }],
+        olxLink: productData.olxLink || '',
         featured: productData.featured || false
     };
     products.unshift(newProduct);
@@ -159,21 +176,34 @@ function saveCart() {
     localStorage.setItem(CONFIG.cartStorageKey, JSON.stringify(cart));
 }
 
-function addToCart(productId) {
+function addToCart(productId, selectedColor = null) {
     const product = products.find(p => p.id === productId);
     if (!product) return;
 
-    const existingItem = cart.find(item => item.id === productId);
+    // Jeśli nie wybrano koloru, weź pierwszy wariant
+    const variant = selectedColor 
+        ? product.variants.find(v => v.color === selectedColor)
+        : product.variants[0];
+    
+    if (!variant) {
+        showNotification('Wybierz kolor produktu!');
+        return;
+    }
+
+    // Sprawdź czy taki wariant już istnieje w koszyku
+    const cartKey = `${productId}-${variant.color}`;
+    const existingItem = cart.find(item => item.cartKey === cartKey);
     
     if (existingItem) {
         existingItem.quantity += 1;
     } else {
         cart.push({
+            cartKey: cartKey,
             id: productId,
             name: product.name,
             price: product.price,
-            image: product.image,
-            color: product.color,
+            image: variant.image,
+            color: variant.color,
             quantity: 1,
             olxLink: product.olxLink
         });
@@ -218,23 +248,67 @@ function renderProducts(filteredProducts = null) {
         return;
     }
 
-    grid.innerHTML = productsToShow.map(product => `
-        <div class="product-card">
-            <div class="product-image">
-                ${product.image ? `<img src="${escapeHtml(product.image)}" alt="${escapeHtml(product.name)}">` : '<span>3D</span>'}
-            </div>
-            <div class="product-info">
-                <h3 class="product-name">${escapeHtml(product.name)}</h3>
-                <p class="product-desc">${escapeHtml(product.desc)}</p>
-                <p class="product-color">Kolor: <strong>${escapeHtml(product.color)}</strong></p>
-                <div class="product-price">${product.price} zł</div>
-                <div class="product-actions">
-                    <button class="btn btn-primary btn-small" onclick="addToCart(${product.id})">Dodaj do koszyka</button>
-                    ${product.olxLink ? `<a href="${escapeHtml(product.olxLink)}" target="_blank" class="btn btn-secondary btn-small">Kup na OLX</a>` : '<button class="btn btn-secondary btn-small" disabled>OLX niedostępny</button>'}
+    grid.innerHTML = productsToShow.map(product => {
+        const firstVariant = product.variants[0];
+        const variantOptions = product.variants.map(v => 
+            `<option value="${escapeHtml(v.color)}">${escapeHtml(v.color.charAt(0).toUpperCase() + v.color.slice(1))}</option>`
+        ).join('');
+        
+        return `
+            <div class="product-card">
+                <div class="product-image" id="productImage-${product.id}">
+                    ${firstVariant.image ? `<img src="${escapeHtml(firstVariant.image)}" alt="${escapeHtml(product.name)}" id="productImg-${product.id}">` : '<span>3D</span>'}
+                </div>
+                <div class="product-info">
+                    <h3 class="product-name">${escapeHtml(product.name)}</h3>
+                    <p class="product-desc">${escapeHtml(product.desc)}</p>
+                    
+                    <div class="product-variant-selector">
+                        <label for="variant-${product.id}">Kolor:</label>
+                        <select id="variant-${product.id}" class="product-color-select" onchange="updateProductImage(${product.id})">
+                            ${variantOptions}
+                        </select>
+                    </div>
+                    
+                    <div class="product-price">${product.price} zł</div>
+                    <div class="product-actions">
+                        <button class="btn btn-primary btn-small" onclick="addToCartWithVariant(${product.id})">Dodaj do koszyka</button>
+                        ${product.olxLink ? `<a href="${escapeHtml(product.olxLink)}" target="_blank" class="btn btn-secondary btn-small">Kup na OLX</a>` : '<button class="btn btn-secondary btn-small" disabled>OLX niedostępny</button>'}
+                    </div>
                 </div>
             </div>
-        </div>
-    `).join('');
+        `;
+    }).join('');
+}
+
+function updateProductImage(productId) {
+    const product = products.find(p => p.id === productId);
+    if (!product) return;
+
+    const selectElement = document.getElementById(`variant-${productId}`);
+    const selectedColor = selectElement.value;
+    const variant = product.variants.find(v => v.color === selectedColor);
+
+    if (!variant) return;
+
+    const imageContainer = document.getElementById(`productImage-${productId}`);
+    const imgElement = document.getElementById(`productImg-${productId}`);
+
+    if (variant.image) {
+        if (imgElement) {
+            imgElement.src = variant.image;
+        } else {
+            imageContainer.innerHTML = `<img src="${escapeHtml(variant.image)}" alt="${escapeHtml(product.name)}" id="productImg-${productId}">`;
+        }
+    } else {
+        imageContainer.innerHTML = '<span>3D</span>';
+    }
+}
+
+function addToCartWithVariant(productId) {
+    const selectElement = document.getElementById(`variant-${productId}`);
+    const selectedColor = selectElement.value;
+    addToCart(productId, selectedColor);
 }
 
 function renderFeaturedProducts() {
@@ -246,22 +320,36 @@ function renderFeaturedProducts() {
         return;
     }
     
-    grid.innerHTML = featured.map(product => `
-        <div class="product-card">
-            <div class="product-image">
-                ${product.image ? `<img src="${escapeHtml(product.image)}" alt="${escapeHtml(product.name)}">` : '<span>3D</span>'}
-            </div>
-            <div class="product-info">
-                <h3 class="product-name">${escapeHtml(product.name)}</h3>
-                <p class="product-desc">${escapeHtml(product.desc)}</p>
-                <p class="product-color">Kolor: <strong>${escapeHtml(product.color)}</strong></p>
-                <div class="product-price">${product.price} zł</div>
-                <div class="product-actions">
-                    <button class="btn btn-primary btn-small" onclick="addToCart(${product.id})">Dodaj do koszyka</button>
+    grid.innerHTML = featured.map(product => {
+        const firstVariant = product.variants[0];
+        const variantOptions = product.variants.map(v => 
+            `<option value="${escapeHtml(v.color)}">${escapeHtml(v.color.charAt(0).toUpperCase() + v.color.slice(1))}</option>`
+        ).join('');
+
+        return `
+            <div class="product-card">
+                <div class="product-image" id="productImage-${product.id}">
+                    ${firstVariant.image ? `<img src="${escapeHtml(firstVariant.image)}" alt="${escapeHtml(product.name)}" id="productImg-${product.id}">` : '<span>3D</span>'}
+                </div>
+                <div class="product-info">
+                    <h3 class="product-name">${escapeHtml(product.name)}</h3>
+                    <p class="product-desc">${escapeHtml(product.desc)}</p>
+                    
+                    <div class="product-variant-selector">
+                        <label for="variant-${product.id}">Kolor:</label>
+                        <select id="variant-${product.id}" class="product-color-select" onchange="updateProductImage(${product.id})">
+                            ${variantOptions}
+                        </select>
+                    </div>
+                    
+                    <div class="product-price">${product.price} zł</div>
+                    <div class="product-actions">
+                        <button class="btn btn-primary btn-small" onclick="addToCartWithVariant(${product.id})">Dodaj do koszyka</button>
+                    </div>
                 </div>
             </div>
-        </div>
-    `).join('');
+        `;
+    }).join('');
 }
 
 function updateCartDisplay() {
@@ -290,7 +378,7 @@ function updateCartDisplay() {
             </div>
             <div class="cart-item-details">
                 <div class="cart-item-name">${escapeHtml(item.name)}</div>
-                <div class="cart-item-color">Kolor: ${escapeHtml(item.color)}</div>
+                <div class="cart-item-color">Kolor: <strong>${escapeHtml(item.color.charAt(0).toUpperCase() + item.color.slice(1))}</strong></div>
                 <div class="cart-item-price">${item.price} zł</div>
                 <div class="quantity-control">
                     <button class="btn btn-secondary" onclick="updateQuantity(${index}, ${item.quantity - 1})">−</button>
@@ -317,7 +405,12 @@ function filterAndSort() {
     let filtered = products.filter(product => {
         const matchesSearch = product.name.toLowerCase().includes(search) || 
                             product.desc.toLowerCase().includes(search);
-        const matchesColor = !color || product.color === color;
+        
+        let matchesColor = true;
+        if (color) {
+            matchesColor = product.variants.some(v => v.color === color);
+        }
+        
         return matchesSearch && matchesColor;
     });
 
@@ -404,12 +497,35 @@ function setupAdminPanel() {
     document.getElementById('addProductForm').addEventListener('submit', (e) => {
         e.preventDefault();
         
+        // Zbierz warianty
+        const variantInputs = document.querySelectorAll('.variant-input-group');
+        const variants = [];
+        
+        variantInputs.forEach(group => {
+            const colorSelect = group.querySelector('.variant-color');
+            const imageInput = group.querySelector('.variant-image');
+            
+            if (colorSelect && colorSelect.value) {
+                variants.push({
+                    color: colorSelect.value,
+                    image: imageInput ? imageInput.value : ''
+                });
+            }
+        });
+
+        // Jeśli brak wariantów, użyj starego formatu (kompatybilność)
+        if (variants.length === 0) {
+            variants.push({
+                color: document.getElementById('productColor').value || 'czarny',
+                image: document.getElementById('productImage').value || ''
+            });
+        }
+
         const newProduct = {
             name: document.getElementById('productName').value,
             price: parseFloat(document.getElementById('productPrice').value),
             desc: document.getElementById('productDesc').value,
-            image: document.getElementById('productImage').value,
-            color: document.getElementById('productColor').value,
+            variants: variants,
             olxLink: document.getElementById('productOLXLink').value,
             featured: document.getElementById('productFeatured').checked
         };
@@ -419,6 +535,7 @@ function setupAdminPanel() {
         renderFeaturedProducts();
         
         document.getElementById('addProductForm').reset();
+        resetVariantInputs();
         renderAdminProductsList();
         showNotification('Produkt dodany!');
     });
@@ -437,6 +554,65 @@ function setupAdminPanel() {
         updatePageSettings();
         showNotification('Ustawienia zapisane!');
     });
+
+    // Przycisk dodawania wariantów
+    const addVariantBtn = document.getElementById('addVariantBtn');
+    if (addVariantBtn) {
+        addVariantBtn.addEventListener('click', addVariantInput);
+    }
+}
+
+function addVariantInput() {
+    const container = document.getElementById('variantsContainer');
+    if (!container) return;
+
+    const index = container.querySelectorAll('.variant-input-group').length;
+    const html = `
+        <div class="variant-input-group">
+            <label>Wariant ${index + 1}:</label>
+            <select class="variant-color form-input">
+                <option value="">Wybierz kolor</option>
+                <option value="czarny">Czarny</option>
+                <option value="biały">Biały</option>
+                <option value="szary">Szary</option>
+                <option value="czerwony">Czerwony</option>
+                <option value="niebieski">Niebieski</option>
+                <option value="zielony">Zielony</option>
+                <option value="żółty">Żółty</option>
+                <option value="pomarańczowy">Pomarańczowy</option>
+            </select>
+            <input type="text" class="variant-image form-input" placeholder="URL zdjęcia wariantu">
+            <button type="button" class="btn btn-secondary btn-small" onclick="removeVariantInput(this)">Usuń</button>
+        </div>
+    `;
+    container.insertAdjacentHTML('beforeend', html);
+}
+
+function removeVariantInput(btn) {
+    btn.closest('.variant-input-group').remove();
+}
+
+function resetVariantInputs() {
+    const container = document.getElementById('variantsContainer');
+    if (container) {
+        container.innerHTML = `
+            <div class="variant-input-group">
+                <label>Wariant 1:</label>
+                <select class="variant-color form-input">
+                    <option value="">Wybierz kolor</option>
+                    <option value="czarny">Czarny</option>
+                    <option value="biały">Biały</option>
+                    <option value="szary">Szary</option>
+                    <option value="czerwony">Czerwony</option>
+                    <option value="niebieski">Niebieski</option>
+                    <option value="zielony">Zielony</option>
+                    <option value="żółty">Żółty</option>
+                    <option value="pomarańczowy">Pomarańczowy</option>
+                </select>
+                <input type="text" class="variant-image form-input" placeholder="URL zdjęcia wariantu">
+            </div>
+        `;
+    }
 }
 
 function loadAdminSettings() {
@@ -455,15 +631,21 @@ function renderAdminProductsList() {
         return;
     }
     
-    list.innerHTML = products.map(product => `
-        <div class="admin-product">
-            <div class="admin-product-info">
-                <div class="admin-product-name">${escapeHtml(product.name)}</div>
-                <div class="admin-product-price">${product.price} zł | Kolor: ${escapeHtml(product.color)}</div>
+    list.innerHTML = products.map(product => {
+        const variantsText = product.variants.map(v => 
+            `${v.color.charAt(0).toUpperCase() + v.color.slice(1)}`
+        ).join(', ');
+
+        return `
+            <div class="admin-product">
+                <div class="admin-product-info">
+                    <div class="admin-product-name">${escapeHtml(product.name)}</div>
+                    <div class="admin-product-price">${product.price} zł | Warianty: ${escapeHtml(variantsText)}</div>
+                </div>
+                <button onclick="deleteProduct(${product.id})">Usuń</button>
             </div>
-            <button onclick="deleteProduct(${product.id})">Usuń</button>
-        </div>
-    `).join('');
+        `;
+    }).join('');
 }
 
 // ========== CHECKOUT ==========
