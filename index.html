@@ -1,4 +1,5 @@
 <!DOCTYPE html>
+
 <html lang="pl">
 <head>
   <meta charset="UTF-8">
@@ -6,273 +7,620 @@
   <title>3D Forge</title>
   <link rel="stylesheet" href="style.css">
 </head>
+
 <body>
 
 <header class="header">
-  <a href="#" class="logo" onclick="showPage('home')">
+
+  <a href="#" class="logo" onclick="showPage('home'); return false;">
     <span>3D</span> FORGE
   </a>
 
   <nav>
-    <a href="#" onclick="showPage('home')">Start</a>
-    <a href="#" onclick="showPage('shop')">Sklep</a>
-    <a href="#" onclick="showPage('about')">O nas</a>
-    <a href="#" onclick="showPage('contact')">Kontakt</a>
-    <button class="cart-button" onclick="openCart()">
-      🛒 Koszyk <span id="cartCount">0</span>
-    </button>
+    <a href="#" onclick="showPage('home'); return false;">Start</a>
+    <a href="#" onclick="showPage('shop'); return false;">Sklep</a>
+    <a href="#" onclick="showPage('about'); return false;">O nas</a>
+    <a href="#" onclick="showPage('contact'); return false;">Kontakt</a>
+
+```
+<button class="cart-button" onclick="openCart()">
+  🛒 Koszyk <span id="cartCount">0</span>
+</button>
+```
+
   </nav>
+
 </header>
 
 <main>
 
-<section id="home" class="page active">
-  <div class="hero">
-    <div class="hero-text">
-      <div class="badge">DRUK 3D • MADE IN POLAND</div>
-      <h1>Twoje pomysły.<br><span>Wydrukowane w 3D.</span></h1>
-      <p id="heroDescription">
-        Nowoczesne modele 3D, breloki i wyjątkowe projekty tworzone z pasją.
-      </p>
-      <button class="main-button" onclick="showPage('shop')">
-        Zobacz sklep →
-      </button>
+  <!-- STRONA GŁÓWNA -->
+
+  <section id="home" class="page active">
+
+```
+<div class="hero">
+
+  <div class="hero-text">
+
+    <div class="badge">
+      DRUK 3D • MADE IN POLAND
     </div>
 
-    <div class="hero-model">3D</div>
-  </div>
+    <h1>
+      Twoje pomysły.<br>
+      <span>Wydrukowane w 3D.</span>
+    </h1>
 
-  <div class="section">
-    <h2>Popularne produkty</h2>
-    <p class="section-subtitle">Sprawdź nasze najciekawsze projekty.</p>
-    <div id="featuredProducts" class="products"></div>
-  </div>
-
-  <div class="how">
-    <h2>Jak to działa?</h2>
-
-    <div class="steps">
-      <div>
-        <strong>01</strong>
-        <h3>Wybierasz produkt</h3>
-        <p>Znajdź interesujący Cię model.</p>
-      </div>
-
-      <div>
-        <strong>02</strong>
-        <h3>Dodajesz do koszyka</h3>
-        <p>Wybierz produkty i ich ilość.</p>
-      </div>
-
-      <div>
-        <strong>03</strong>
-        <h3>Kupujesz przez OLX</h3>
-        <p>Przejdź do odpowiedniego ogłoszenia.</p>
-      </div>
-    </div>
-  </div>
-</section>
-
-<section id="shop" class="page">
-  <div class="page-title">
-    <div>
-      <div class="badge">NASZE PRODUKTY</div>
-      <h1>Sklep <span>3D</span></h1>
-    </div>
-
-    <input
-      id="searchInput"
-      class="search"
-      type="text"
-      placeholder="🔎 Szukaj produktu..."
-      oninput="renderProducts()"
-    >
-  </div>
-
-  <div id="products" class="products"></div>
-</section>
-
-<section id="about" class="page">
-  <div class="content-box">
-    <div class="badge">O NAS</div>
-    <h1>Poznaj <span id="aboutCompany">3D Forge</span></h1>
-    <p id="aboutText">
-      Tworzymy ciekawe i praktyczne projekty drukowane w 3D.
-      Każdy model przygotowujemy z dbałością o szczegóły.
+    <p id="heroDescription">
+      Nowoczesne modele 3D, breloki i wyjątkowe projekty
+      tworzone z pasją.
     </p>
+
+    <button class="main-button" onclick="showPage('shop')">
+      Zobacz sklep →
+    </button>
+
   </div>
-</section>
 
-<section id="contact" class="page">
-  <div class="content-box">
-    <div class="badge">KONTAKT</div>
-    <h1>Skontaktuj się z nami</h1>
 
-    <div class="contact-card">
-      <p>📧 <strong>E-mail:</strong> <span id="contactEmail"></span></p>
-      <p>📞 <strong>Telefon:</strong> <span id="contactPhone"></span></p>
+  <div class="hero-model">
+    3D
+  </div>
+
+</div>
+
+
+<div class="section">
+
+  <h2>
+    Popularne produkty
+  </h2>
+
+  <p class="section-subtitle">
+    Sprawdź nasze najciekawsze projekty.
+  </p>
+
+  <div id="featuredProducts" class="products"></div>
+
+</div>
+
+
+<div class="how">
+
+  <h2>
+    Jak to działa?
+  </h2>
+
+  <div class="steps">
+
+    <div>
+      <strong>01</strong>
+
+      <h3>
+        Wybierasz produkt
+      </h3>
+
+      <p>
+        Znajdź interesujący Cię model.
+      </p>
     </div>
+
+
+    <div>
+      <strong>02</strong>
+
+      <h3>
+        Dodajesz do koszyka
+      </h3>
+
+      <p>
+        Wybierz produkty i ich ilość.
+      </p>
+    </div>
+
+
+    <div>
+      <strong>03</strong>
+
+      <h3>
+        Kupujesz przez OLX
+      </h3>
+
+      <p>
+        Przejdź do odpowiedniego ogłoszenia.
+      </p>
+    </div>
+
   </div>
-</section>
 
-<section id="admin" class="page">
-  <div class="admin-container">
+</div>
+```
 
-    <div class="admin-header">
-      <div>
-        <div class="badge">PANEL ADMINISTRATORA</div>
-        <h1>Zarządzaj <span>sklepem</span></h1>
+  </section>
+
+  <!-- SKLEP -->
+
+  <section id="shop" class="page">
+
+```
+<div class="page-title">
+
+  <div>
+
+    <div class="badge">
+      NASZE PRODUKTY
+    </div>
+
+    <h1>
+      Sklep <span>3D</span>
+    </h1>
+
+  </div>
+
+
+  <input
+    id="searchInput"
+    class="search"
+    type="text"
+    placeholder="🔎 Szukaj produktu..."
+    oninput="renderProducts()"
+  >
+
+</div>
+
+
+<div id="products" class="products"></div>
+```
+
+  </section>
+
+  <!-- O NAS -->
+
+  <section id="about" class="page">
+
+```
+<div class="content-box">
+
+  <div class="badge">
+    O NAS
+  </div>
+
+  <h1>
+    Poznaj <span id="aboutCompany">3D Forge</span>
+  </h1>
+
+  <p id="aboutText">
+    Tworzymy ciekawe i praktyczne projekty drukowane w 3D.
+    Każdy model przygotowujemy z dbałością o szczegóły.
+  </p>
+
+</div>
+```
+
+  </section>
+
+  <!-- KONTAKT -->
+
+  <section id="contact" class="page">
+
+```
+<div class="content-box">
+
+  <div class="badge">
+    KONTAKT
+  </div>
+
+  <h1>
+    Skontaktuj się z nami
+  </h1>
+
+
+  <div class="contact-card">
+
+    <p>
+      📧
+      <strong>E-mail:</strong>
+      <span id="contactEmail"></span>
+    </p>
+
+    <p>
+      📞
+      <strong>Telefon:</strong>
+      <span id="contactPhone"></span>
+    </p>
+
+  </div>
+
+</div>
+```
+
+  </section>
+
+  <!-- PANEL ADMINISTRATORA -->
+
+  <section id="admin" class="page">
+
+```
+<div class="admin-container">
+
+
+  <div class="admin-header">
+
+    <div>
+
+      <div class="badge">
+        PANEL ADMINISTRATORA
       </div>
 
-      <button class="danger-button" onclick="resetAllData()">
-        🔄 Reset danych
-      </button>
+      <h1>
+        Zarządzaj <span>sklepem</span>
+      </h1>
+
     </div>
 
-    <div class="admin-tabs">
-      <button class="tab active" onclick="openAdminTab('productsTab', this)">
-        📦 Produkty
-      </button>
 
-      <button class="tab" onclick="openAdminTab('siteTab', this)">
-        🌐 Dane strony
-      </button>
-    </div>
+    <button
+      class="danger-button"
+      onclick="resetAllData()"
+    >
+      🔄 Reset danych
+    </button>
 
-    <div id="productsTab" class="admin-tab-content active">
+  </div>
 
-      <div class="admin-grid">
 
-        <div class="admin-form">
+  <div class="admin-tabs">
 
-          <h2 id="formTitle">Dodaj produkt</h2>
+    <button
+      class="tab active"
+      onclick="openAdminTab('productsTab', this)"
+    >
+      📦 Produkty
+    </button>
 
-          <input id="productId" type="hidden">
 
-          <label>Nazwa produktu</label>
-          <input id="productName" type="text" placeholder="np. Porsche 911">
+    <button
+      class="tab"
+      onclick="openAdminTab('siteTab', this)"
+    >
+      🌐 Dane strony
+    </button>
 
-          <label>Cena</label>
-          <input id="productPrice" type="number" min="0" step="0.01" placeholder="45">
+  </div>
 
-          <label>Opis</label>
-          <textarea id="productDescription" placeholder="Opis produktu..."></textarea>
 
-          <label>Zdjęcie produktu</label>
-          <input id="productImage" type="text" placeholder="https://...">
+  <!-- PRODUKTY -->
 
-          <small>
-            Możesz wkleić bezpośredni adres zdjęcia.
-          </small>
+  <div
+    id="productsTab"
+    class="admin-tab-content active"
+  >
 
-          <label>Kolory / warianty</label>
-          <input id="productColors" type="text" placeholder="Czarny, Biały, Czerwony">
+    <div class="admin-grid">
 
-          <label>Link do OLX</label>
-          <input id="productOlx" type="url" placeholder="https://www.olx.pl/...">
-
-          <label class="checkbox">
-            <input id="productFeatured" type="checkbox">
-            ⭐ Wyróżnij produkt
-          </label>
-
-          <div class="form-buttons">
-            <button class="main-button" onclick="saveProduct()">
-              💾 Zapisz produkt
-            </button>
-
-            <button class="secondary-button" onclick="clearProductForm()">
-              Wyczyść
-            </button>
-          </div>
-
-        </div>
-
-        <div>
-          <h2>Twoje produkty</h2>
-          <div id="adminProducts"></div>
-        </div>
-
-      </div>
-    </div>
-
-    <div id="siteTab" class="admin-tab-content">
 
       <div class="admin-form">
 
-        <h2>Dane strony</h2>
+        <h2 id="formTitle">
+          Dodaj produkt
+        </h2>
 
-        <label>Nazwa firmy</label>
-        <input id="siteName" type="text">
 
-        <label>E-mail</label>
-        <input id="siteEmail" type="email">
+        <input
+          id="productId"
+          type="hidden"
+        >
 
-        <label>Telefon</label>
-        <input id="sitePhone" type="text">
 
-        <label>Opis strony głównej</label>
-        <textarea id="siteHero"></textarea>
+        <label>
+          Nazwa produktu
+        </label>
 
-        <label>Tekst „O nas”</label>
-        <textarea id="siteAbout"></textarea>
+        <input
+          id="productName"
+          type="text"
+          placeholder="np. Porsche 911"
+        >
 
-        <button class="main-button" onclick="saveSiteSettings()">
-          💾 Zapisz dane strony
-        </button>
+
+        <label>
+          Cena
+        </label>
+
+        <input
+          id="productPrice"
+          type="number"
+          min="0"
+          step="0.01"
+          placeholder="45"
+        >
+
+
+        <label>
+          Opis
+        </label>
+
+        <textarea
+          id="productDescription"
+          placeholder="Opis produktu..."
+        ></textarea>
+
+
+        <label>
+          Zdjęcie produktu
+        </label>
+
+        <input
+          id="productImage"
+          type="text"
+          placeholder="https://..."
+        >
+
+
+        <small>
+          Wklej adres zdjęcia produktu.
+        </small>
+
+
+        <label>
+          Kolory / warianty
+        </label>
+
+        <input
+          id="productColors"
+          type="text"
+          placeholder="Czarny, Biały, Czerwony"
+        >
+
+
+        <label>
+          Link do OLX
+        </label>
+
+        <input
+          id="productOlx"
+          type="url"
+          placeholder="https://www.olx.pl/..."
+        >
+
+
+        <label class="checkbox">
+
+          <input
+            id="productFeatured"
+            type="checkbox"
+          >
+
+          ⭐ Wyróżnij produkt
+
+        </label>
+
+
+        <div class="form-buttons">
+
+          <button
+            class="main-button"
+            onclick="saveProduct()"
+          >
+            💾 Zapisz produkt
+          </button>
+
+
+          <button
+            class="secondary-button"
+            onclick="clearProductForm()"
+          >
+            Wyczyść
+          </button>
+
+        </div>
 
       </div>
+
+
+      <div>
+
+        <h2>
+          Twoje produkty
+        </h2>
+
+        <div id="adminProducts"></div>
+
+      </div>
+
+
     </div>
 
   </div>
-</section>
+
+
+  <!-- DANE STRONY -->
+
+  <div
+    id="siteTab"
+    class="admin-tab-content"
+  >
+
+    <div class="admin-form">
+
+      <h2>
+        Dane strony
+      </h2>
+
+
+      <label>
+        Nazwa firmy
+      </label>
+
+      <input
+        id="siteName"
+        type="text"
+      >
+
+
+      <label>
+        E-mail
+      </label>
+
+      <input
+        id="siteEmail"
+        type="email"
+      >
+
+
+      <label>
+        Telefon
+      </label>
+
+      <input
+        id="sitePhone"
+        type="text"
+      >
+
+
+      <label>
+        Opis strony głównej
+      </label>
+
+      <textarea
+        id="siteHero"
+      ></textarea>
+
+
+      <label>
+        Tekst „O nas”
+      </label>
+
+      <textarea
+        id="siteAbout"
+      ></textarea>
+
+
+      <button
+        class="main-button"
+        onclick="saveSiteSettings()"
+      >
+        💾 Zapisz dane strony
+      </button>
+
+    </div>
+
+  </div>
+
+</div>
+```
+
+  </section>
 
 </main>
 
+<!-- STOPKA -->
+
 <footer>
+
   <div>
-    <strong id="footerCompany">3D Forge</strong>
-    <p>Projekty drukowane w 3D.</p>
+
+```
+<strong id="footerCompany">
+  3D Forge
+</strong>
+
+<p>
+  Projekty drukowane w 3D.
+</p>
+```
+
   </div>
 
   <div>
-    <p id="footerEmail"></p>
-    <p id="footerPhone"></p>
+
+```
+<p id="footerEmail"></p>
+
+<p id="footerPhone"></p>
+```
+
   </div>
 
-  <button class="admin-link" onclick="openAdmin()">
-    ⚙️ Panel
+<button
+class="admin-link"
+onclick="openAdmin()"
+
+>
+
+```
+⚙️ Panel
+```
+
   </button>
+
 </footer>
 
-<div id="cartModal" class="modal">
+<!-- KOSZYK -->
+
+<div
+  id="cartModal"
+  class="modal"
+>
+
   <div class="modal-content">
 
-    <button class="close" onclick="closeCart()">×</button>
+```
+<button
+  class="close"
+  onclick="closeCart()"
+>
+  ×
+</button>
 
-    <h2>🛒 Twój koszyk</h2>
 
-    <div id="cartItems"></div>
+<h2>
+  🛒 Twój koszyk
+</h2>
 
-    <div class="cart-total">
-      Razem: <strong id="cartTotal">0,00 zł</strong>
-    </div>
 
-    <div class="cart-actions">
-      <button class="secondary-button" onclick="clearCart()">
-        Wyczyść
-      </button>
+<div id="cartItems"></div>
 
-      <button class="main-button" onclick="buyCart()">
-        Kup przez OLX →
-      </button>
-    </div>
 
-    <p class="cart-info">
-      Płatność i finalizacja zamówienia odbywa się na OLX.
-    </p>
+<div class="cart-total">
+
+  Razem:
+
+  <strong id="cartTotal">
+    0,00 zł
+  </strong>
+
+</div>
+
+
+<div class="cart-actions">
+
+  <button
+    class="secondary-button"
+    onclick="clearCart()"
+  >
+    Wyczyść
+  </button>
+
+
+  <button
+    class="main-button"
+    onclick="buyCart()"
+  >
+    Kup przez OLX →
+  </button>
+
+</div>
+
+
+<p class="cart-info">
+  Płatność i finalizacja zamówienia odbywa się na OLX.
+</p>
+```
 
   </div>
+
 </div>
 
 <div id="toast"></div>
