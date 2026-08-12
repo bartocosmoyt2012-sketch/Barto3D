@@ -5,11 +5,11 @@ const CONFIG = {
     cartStorageKey: 'forge3d_cart_v4',
     settingsStorageKey: 'forge3d_settings_v4',
     defaultSettings: {
-        brandName: '3D Forge',
-        email: 'contact@3dforge.pl',
+        brandName: 'Barto3D',
+        email: 'contact@barto3d.pl',
         phone: '+48 123 456 789',
         heroSubtitle: 'Profesjonalny druk 3D dla każdego projektu',
-        aboutText: '3D Forge to profesjonalna pracownia specjalizująca się w druku 3D. Tworzymy unikalne, wysokiej jakości produkty dostosowane do Twoich potrzeb.'
+        aboutText: 'Barto3D to profesjonalna pracownia specjalizująca się w druku 3D. Tworzymy unikalne, wysokiej jakości produkty dostosowane do Twoich potrzeb.'
     }
 };
 
