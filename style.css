@@ -54,14 +54,30 @@ body {
 .logo {
     display: flex;
     align-items: center;
-    gap: 10px;
+    gap: 12px;
     font-size: 1.5rem;
     font-weight: bold;
     color: var(--accent-neon);
 }
 
 .logo-icon {
-    font-size: 1.8rem;
+    width: 45px;
+    height: 45px;
+    min-width: 45px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.logo-icon svg {
+    width: 100%;
+    height: 100%;
+    filter: drop-shadow(0 0 8px rgba(212, 165, 116, 0.3));
+    transition: filter 0.3s ease;
+}
+
+.logo:hover .logo-icon svg {
+    filter: drop-shadow(0 0 12px rgba(212, 165, 116, 0.6));
 }
 
 .logo-text {
@@ -632,6 +648,12 @@ section h2::after {
     margin-bottom: 2rem;
 }
 
+.footer-section {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
 .footer-section h4 {
     color: var(--accent-neon);
     margin-bottom: 1rem;
@@ -658,6 +680,18 @@ section h2::after {
 
 .footer-section li {
     margin-bottom: 0.5rem;
+}
+
+.footer-logo {
+    width: 50px;
+    height: 50px;
+    margin-bottom: 0.5rem;
+    filter: drop-shadow(0 0 8px rgba(212, 165, 116, 0.3));
+    transition: filter 0.3s ease;
+}
+
+.footer-logo:hover {
+    filter: drop-shadow(0 0 12px rgba(212, 165, 116, 0.6));
 }
 
 .footer-bottom {
@@ -944,6 +978,15 @@ section h2::after {
         display: none;
     }
 
+    .logo {
+        gap: 8px;
+    }
+
+    .logo-icon {
+        width: 40px;
+        height: 40px;
+    }
+
     .products-grid {
         grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
         gap: 1rem;
@@ -1001,18 +1044,21 @@ section h2::after {
         flex-direction: column;
     }
 
-    .product-actions button,
-    .product-actions a {
-        width: 100%;
-    }
-
     .cart-item {
         flex-direction: column;
+        align-items: flex-start;
     }
 
-    .cart-item-image {
-        width: 100%;
-        height: 150px;
+    .cart-wrapper {
+        grid-template-columns: 1fr;
+    }
+
+    .hero-title {
+        font-size: 1.5rem;
+    }
+
+    .about-content {
+        grid-template-columns: 1fr;
     }
 
     .footer-content {
@@ -1021,13 +1067,5 @@ section h2::after {
 
     section h2 {
         font-size: 1.8rem;
-    }
-
-    .hero-subtitle {
-        font-size: 1rem;
-    }
-
-    .steps {
-        grid-template-columns: 1fr;
     }
 }
