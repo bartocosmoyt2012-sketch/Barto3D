@@ -12,8 +12,40 @@
         <div class="container">
             <div class="nav-wrapper">
                 <div class="logo">
-                    <span class="logo-icon">⚙️</span>
-                    <span class="logo-text" id="navBrandName">3D Forge</span>
+                    <svg class="logo-icon" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+                        <!-- Fox head -->
+                        <g id="fox-head">
+                            <!-- Ears -->
+                            <polygon points="70,40 60,20 80,35" fill="#D4A574"/>
+                            <polygon points="130,40 140,20 120,35" fill="#D4A574"/>
+                            <polygon points="70,40 65,30 75,35" fill="#1a1a1a"/>
+                            <polygon points="130,40 135,30 125,35" fill="#1a1a1a"/>
+                            
+                            <!-- Head -->
+                            <ellipse cx="100" cy="70" rx="45" ry="50" fill="#D4A574"/>
+                            <ellipse cx="100" cy="70" rx="40" ry="45" fill="#1a1a1a"/>
+                            
+                            <!-- Snout -->
+                            <ellipse cx="100" cy="95" rx="25" ry="20" fill="#D4A574"/>
+                            <ellipse cx="100" cy="95" rx="20" ry="15" fill="#1a1a1a"/>
+                            
+                            <!-- Eyes -->
+                            <circle cx="85" cy="60" r="5" fill="#D4A574"/>
+                            <circle cx="115" cy="60" r="5" fill="#D4A574"/>
+                            <circle cx="85" cy="60" r="3" fill="#000"/>
+                            <circle cx="115" cy="60" r="3" fill="#000"/>
+                            
+                            <!-- Nose -->
+                            <ellipse cx="100" cy="90" rx="3" ry="4" fill="#000"/>
+                        </g>
+                        
+                        <!-- Body/Geometric Pattern -->
+                        <g id="body" opacity="0.8">
+                            <path d="M 70 110 L 100 140 L 130 110 Z" fill="#D4A574" stroke="#1a1a1a" stroke-width="2"/>
+                            <path d="M 65 120 L 95 155 L 135 120 Z" fill="#1a1a1a" stroke="#D4A574" stroke-width="1.5"/>
+                        </g>
+                    </svg>
+                    <span class="logo-text" id="navBrandName">Barto3D</span>
                 </div>
                 <button class="menu-toggle" id="menuToggle">☰</button>
                 <ul class="nav-menu" id="navMenu">
@@ -119,7 +151,7 @@
             <div class="about-content">
                 <div class="about-text">
                     <p id="aboutText">
-                        3D Forge to profesjonalna pracownia specjalizująca się w druku 3D. 
+                        Barto3D to profesjonalna pracownia specjalizująca się w druku 3D. 
                         Tworzymy unikalne, wysokiej jakości produkty dostosowane do Twoich potrzeb.
                     </p>
                 </div>
@@ -177,12 +209,45 @@
         <div class="container">
             <div class="footer-content">
                 <div class="footer-section">
-                    <h4 id="footerBrandName">3D Forge</h4>
+                    <svg class="footer-logo" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+                        <!-- Fox head -->
+                        <g id="fox-head">
+                            <!-- Ears -->
+                            <polygon points="70,40 60,20 80,35" fill="#D4A574"/>
+                            <polygon points="130,40 140,20 120,35" fill="#D4A574"/>
+                            <polygon points="70,40 65,30 75,35" fill="#1a1a1a"/>
+                            <polygon points="130,40 135,30 125,35" fill="#1a1a1a"/>
+                            
+                            <!-- Head -->
+                            <ellipse cx="100" cy="70" rx="45" ry="50" fill="#D4A574"/>
+                            <ellipse cx="100" cy="70" rx="40" ry="45" fill="#1a1a1a"/>
+                            
+                            <!-- Snout -->
+                            <ellipse cx="100" cy="95" rx="25" ry="20" fill="#D4A574"/>
+                            <ellipse cx="100" cy="95" rx="20" ry="15" fill="#1a1a1a"/>
+                            
+                            <!-- Eyes -->
+                            <circle cx="85" cy="60" r="5" fill="#D4A574"/>
+                            <circle cx="115" cy="60" r="5" fill="#D4A574"/>
+                            <circle cx="85" cy="60" r="3" fill="#000"/>
+                            <circle cx="115" cy="60" r="3" fill="#000"/>
+                            
+                            <!-- Nose -->
+                            <ellipse cx="100" cy="90" rx="3" ry="4" fill="#000"/>
+                        </g>
+                        
+                        <!-- Body/Geometric Pattern -->
+                        <g id="body" opacity="0.8">
+                            <path d="M 70 110 L 100 140 L 130 110 Z" fill="#D4A574" stroke="#1a1a1a" stroke-width="2"/>
+                            <path d="M 65 120 L 95 155 L 135 120 Z" fill="#1a1a1a" stroke="#D4A574" stroke-width="1.5"/>
+                        </g>
+                    </svg>
+                    <h4 id="footerBrandName">Barto3D</h4>
                     <p>Profesjonalny druk 3D</p>
                 </div>
                 <div class="footer-section">
                     <h4>Kontakt</h4>
-                    <p>Email: <a href="mailto:contact@3dforge.pl" id="footerEmail">contact@3dforge.pl</a></p>
+                    <p>Email: <a href="mailto:contact@barto3d.pl" id="footerEmail">contact@barto3d.pl</a></p>
                     <p>Telefon: <a href="tel:+48123456789" id="footerPhone">+48 123 456 789</a></p>
                 </div>
                 <div class="footer-section">
@@ -195,7 +260,7 @@
                 </div>
             </div>
             <div class="footer-bottom">
-                <p>&copy; 2024 3D Forge. Wszystkie prawa zastrzeżone.</p>
+                <p>&copy; 2024 Barto3D. Wszystkie prawa zastrzeżone.</p>
             </div>
         </div>
     </footer>
@@ -279,10 +344,10 @@
                     <h4>Dane firmy</h4>
                     <form id="settingsForm">
                         <label>Nazwa firmy:</label>
-                        <input type="text" id="settingsBrandName" placeholder="3D Forge" class="form-input">
+                        <input type="text" id="settingsBrandName" placeholder="Barto3D" class="form-input">
                         
                         <label>E-mail:</label>
-                        <input type="email" id="settingsEmail" placeholder="contact@3dforge.pl" class="form-input">
+                        <input type="email" id="settingsEmail" placeholder="contact@barto3d.pl" class="form-input">
                         
                         <label>Telefon:</label>
                         <input type="tel" id="settingsPhone" placeholder="+48 123 456 789" class="form-input">
