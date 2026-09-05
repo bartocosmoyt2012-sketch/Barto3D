@@ -58,26 +58,24 @@ body {
     font-size: 1.5rem;
     font-weight: bold;
     color: var(--accent-neon);
+    cursor: pointer;
+    transition: transform 0.3s ease;
 }
 
-.logo-icon {
-    width: 45px;
-    height: 45px;
-    min-width: 45px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+.logo:hover {
+    transform: scale(1.05);
 }
 
-.logo-icon svg {
-    width: 100%;
-    height: 100%;
-    filter: drop-shadow(0 0 8px rgba(212, 165, 116, 0.3));
+.logo-image {
+    height: 50px;
+    width: auto;
+    object-fit: contain;
+    filter: drop-shadow(0 0 8px rgba(0, 255, 0, 0.2));
     transition: filter 0.3s ease;
 }
 
-.logo:hover .logo-icon svg {
-    filter: drop-shadow(0 0 12px rgba(212, 165, 116, 0.6));
+.logo:hover .logo-image {
+    filter: drop-shadow(0 0 12px rgba(0, 255, 0, 0.5));
 }
 
 .logo-text {
@@ -151,6 +149,26 @@ body {
     overflow: hidden;
 }
 
+.hero-bg {
+    position: absolute;
+    top: 0;
+    right: -10%;
+    width: 500px;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0.15;
+    z-index: 1;
+    pointer-events: none;
+}
+
+.hero-logo-bg {
+    width: 100%;
+    height: auto;
+    object-fit: contain;
+}
+
 .hero::before {
     content: '';
     position: absolute;
@@ -167,6 +185,7 @@ body {
     text-align: center;
     z-index: 2;
     animation: fadeInUp 1s ease;
+    position: relative;
 }
 
 .hero-title {
@@ -683,15 +702,16 @@ section h2::after {
 }
 
 .footer-logo {
-    width: 50px;
-    height: 50px;
-    margin-bottom: 0.5rem;
-    filter: drop-shadow(0 0 8px rgba(212, 165, 116, 0.3));
+    width: 60px;
+    height: auto;
+    object-fit: contain;
+    margin-bottom: 1rem;
+    filter: drop-shadow(0 0 8px rgba(0, 255, 0, 0.2));
     transition: filter 0.3s ease;
 }
 
 .footer-logo:hover {
-    filter: drop-shadow(0 0 12px rgba(212, 165, 116, 0.6));
+    filter: drop-shadow(0 0 12px rgba(0, 255, 0, 0.5));
 }
 
 .footer-bottom {
@@ -982,9 +1002,14 @@ section h2::after {
         gap: 8px;
     }
 
-    .logo-icon {
-        width: 40px;
+    .logo-image {
         height: 40px;
+    }
+
+    .hero-bg {
+        width: 300px;
+        right: -50px;
+        opacity: 0.1;
     }
 
     .products-grid {
@@ -1063,6 +1088,10 @@ section h2::after {
 
     .footer-content {
         grid-template-columns: 1fr;
+    }
+
+    .hero-bg {
+        display: none;
     }
 
     section h2 {
