@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>3D Forge - Druk 3D</title>
+    <title>Barto3D - Druk 3D</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -12,39 +12,7 @@
         <div class="container">
             <div class="nav-wrapper">
                 <div class="logo">
-                    <svg class="logo-icon" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
-                        <!-- Fox head -->
-                        <g id="fox-head">
-                            <!-- Ears -->
-                            <polygon points="70,40 60,20 80,35" fill="#D4A574"/>
-                            <polygon points="130,40 140,20 120,35" fill="#D4A574"/>
-                            <polygon points="70,40 65,30 75,35" fill="#1a1a1a"/>
-                            <polygon points="130,40 135,30 125,35" fill="#1a1a1a"/>
-                            
-                            <!-- Head -->
-                            <ellipse cx="100" cy="70" rx="45" ry="50" fill="#D4A574"/>
-                            <ellipse cx="100" cy="70" rx="40" ry="45" fill="#1a1a1a"/>
-                            
-                            <!-- Snout -->
-                            <ellipse cx="100" cy="95" rx="25" ry="20" fill="#D4A574"/>
-                            <ellipse cx="100" cy="95" rx="20" ry="15" fill="#1a1a1a"/>
-                            
-                            <!-- Eyes -->
-                            <circle cx="85" cy="60" r="5" fill="#D4A574"/>
-                            <circle cx="115" cy="60" r="5" fill="#D4A574"/>
-                            <circle cx="85" cy="60" r="3" fill="#000"/>
-                            <circle cx="115" cy="60" r="3" fill="#000"/>
-                            
-                            <!-- Nose -->
-                            <ellipse cx="100" cy="90" rx="3" ry="4" fill="#000"/>
-                        </g>
-                        
-                        <!-- Body/Geometric Pattern -->
-                        <g id="body" opacity="0.8">
-                            <path d="M 70 110 L 100 140 L 130 110 Z" fill="#D4A574" stroke="#1a1a1a" stroke-width="2"/>
-                            <path d="M 65 120 L 95 155 L 135 120 Z" fill="#1a1a1a" stroke="#D4A574" stroke-width="1.5"/>
-                        </g>
-                    </svg>
+                    <img src="images/barto-logo.jpeg" alt="Barto3D Logo" class="logo-image">
                     <span class="logo-text" id="navBrandName">Barto3D</span>
                 </div>
                 <button class="menu-toggle" id="menuToggle">☰</button>
@@ -62,6 +30,9 @@
 
     <!-- HERO SECTION -->
     <section id="home" class="hero">
+        <div class="hero-bg">
+            <img src="images/barto-logo.jpeg" alt="Barto3D Background" class="hero-logo-bg">
+        </div>
         <div class="container">
             <div class="hero-content">
                 <h1 class="hero-title" id="heroTitle">Twoje pomysły.<br><span class="neon">Wydrukowane w 3D.</span></h1>
@@ -209,39 +180,7 @@
         <div class="container">
             <div class="footer-content">
                 <div class="footer-section">
-                    <svg class="footer-logo" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
-                        <!-- Fox head -->
-                        <g id="fox-head">
-                            <!-- Ears -->
-                            <polygon points="70,40 60,20 80,35" fill="#D4A574"/>
-                            <polygon points="130,40 140,20 120,35" fill="#D4A574"/>
-                            <polygon points="70,40 65,30 75,35" fill="#1a1a1a"/>
-                            <polygon points="130,40 135,30 125,35" fill="#1a1a1a"/>
-                            
-                            <!-- Head -->
-                            <ellipse cx="100" cy="70" rx="45" ry="50" fill="#D4A574"/>
-                            <ellipse cx="100" cy="70" rx="40" ry="45" fill="#1a1a1a"/>
-                            
-                            <!-- Snout -->
-                            <ellipse cx="100" cy="95" rx="25" ry="20" fill="#D4A574"/>
-                            <ellipse cx="100" cy="95" rx="20" ry="15" fill="#1a1a1a"/>
-                            
-                            <!-- Eyes -->
-                            <circle cx="85" cy="60" r="5" fill="#D4A574"/>
-                            <circle cx="115" cy="60" r="5" fill="#D4A574"/>
-                            <circle cx="85" cy="60" r="3" fill="#000"/>
-                            <circle cx="115" cy="60" r="3" fill="#000"/>
-                            
-                            <!-- Nose -->
-                            <ellipse cx="100" cy="90" rx="3" ry="4" fill="#000"/>
-                        </g>
-                        
-                        <!-- Body/Geometric Pattern -->
-                        <g id="body" opacity="0.8">
-                            <path d="M 70 110 L 100 140 L 130 110 Z" fill="#D4A574" stroke="#1a1a1a" stroke-width="2"/>
-                            <path d="M 65 120 L 95 155 L 135 120 Z" fill="#1a1a1a" stroke="#D4A574" stroke-width="1.5"/>
-                        </g>
-                    </svg>
+                    <img src="images/barto-logo.jpeg" alt="Barto3D Logo" class="footer-logo">
                     <h4 id="footerBrandName">Barto3D</h4>
                     <p>Profesjonalny druk 3D</p>
                 </div>
